@@ -19,7 +19,7 @@ from src.constants import (
     GEMMA_7B,
     LLAMA_3_1_8B,
     MINICPM_v2_6,
-    MISTRAL_7B_v03,
+    MISTRAL_7B_v02,
 )
 from constants import CERD, CAM_MCQ
 from utils import get_key_from_model_name, get_dataset
@@ -47,7 +47,7 @@ def main(model_name: str,
 
 
 if __name__ == '__main__':
-    for param_model_name in (GEMMA_7B, LLAMA_3_1_8B, MINICPM_v2_6, MISTRAL_7B_v03):
+    for param_model_name in (LLAMA_3_1_8B, MISTRAL_7B_v02):
         param_prompt_id = '00'
         param_dataset_name = CERD  # CERD, CAM_MCQ
         param_target_level = 'A2'  # A1, A2, ..., C2
