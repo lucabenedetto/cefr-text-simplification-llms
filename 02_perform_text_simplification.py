@@ -13,8 +13,8 @@ import pickle
 from src.utils import init_adapter
 
 
-def main(model_name, prompt_id, dataset_name, target_cefr_level):
-    adapter = init_adapter(model_name)
+def main(model_name, prompt_id, dataset_name, target_cefr_level, access_key):
+    adapter = init_adapter(model_name, access_key=access_key)
     converted_texts = adapter.convert_texts(prompt_id, dataset_name, target_cefr_level)
     pickle.dump(
         converted_texts,
@@ -27,4 +27,5 @@ if __name__ == '__main__':
     param_prompt_id = 'prompt_id'
     param_dataset_name = 'dataset_name'  # CERD, CAM_MCQ
     param_target_level = 'target_level'  # A1, A2, ..., C2
-    main(param_model_name, param_prompt_id, param_dataset_name, param_target_level)
+    param_access_key = 'asdf'
+    main(param_model_name, param_prompt_id, param_dataset_name, param_target_level, param_access_key)
