@@ -12,8 +12,12 @@ import os
 import pandas as pd
 import pickle
 from src.utils import init_adapter
-from src.constants import GPT_3_5_0613
-from constants import CERD
+from src.constants import (
+    GPT_3_5_0613,
+    GPT_4o_MINI_240718,
+    GEMMA_2B,
+)
+from constants import CERD, CAM_MCQ
 from utils import get_key_from_model_name, get_dataset
 
 
@@ -39,7 +43,7 @@ def main(model_name: str,
 
 
 if __name__ == '__main__':
-    param_model_name = GPT_3_5_0613
+    param_model_name = GEMMA_2B
     param_prompt_id = '00'
     param_dataset_name = CERD  # CERD, CAM_MCQ
     param_target_level = 'A2'  # A1, A2, ..., C2
