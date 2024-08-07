@@ -19,10 +19,8 @@ from utils import get_key_from_model_name
 def main(model_name, prompt_id, dataset_name, target_cefr_level, access_key):
     adapter = init_adapter(model_name, access_key=access_key)
     converted_texts = adapter.convert_texts(prompt_id, dataset_name, target_cefr_level)
-    pickle.dump(
-        converted_texts,
-        open(os.path.join(f'data/output/{dataset_name}/{model_name}/{prompt_id}/converted_texts_{target_cefr_level}.pkl'), 'wb')
-    )
+    output_dir = f'data/output/{dataset_name}/{model_name}/{prompt_id}'
+    pickle.dump(converted_texts, open(os.path.join(output_dir, f'converted_texts_{target_cefr_level}.pkl'), 'wb'))
 
 
 if __name__ == '__main__':
