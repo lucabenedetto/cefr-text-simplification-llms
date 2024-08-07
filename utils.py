@@ -8,7 +8,7 @@ def get_dataset(dataset_name: str) -> pd.DataFrame:
     if dataset_name == CERD:
         return pd.read_csv('data/input/cerd.csv')
     if dataset_name == CAM_MCQ:
-        return pd.read_csv('data/input/mcq_cupa.csv')
+        return pd.read_csv('data/input/mcq_cupa_texts.csv')
     raise ValueError(f'Dataset {dataset_name} not supported.')
 
 
