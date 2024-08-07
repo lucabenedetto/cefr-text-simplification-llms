@@ -15,6 +15,7 @@ class BaseLLMAdapter(object):
         converted_texts = dict()
         for text_id, text in dataset[[COLUMN_TEXT_ID, COLUMN_TEXT]].values:
             if text_id not in converted_texts.keys():
+                print(f"Processing text_id {text_id}")  # TODO make this logging.
                 converted_texts[text_id] = self.convert_single_text(text)
         return converted_texts
 
