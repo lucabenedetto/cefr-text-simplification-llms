@@ -1,5 +1,15 @@
 import json
+import pandas as pd
 from src.constants import OPENAI_MODEL_NAMES, PRETRAINED_MODEL_NAMES
+from constants import CERD, CAM_MCQ
+
+
+def get_dataset(dataset_name: str) -> pd.DataFrame:
+    if dataset_name == CERD:
+        return pd.read_csv('data/input/cerd.csv')
+    if dataset_name == CAM_MCQ:
+        return pd.read_csv('data/input/mcq_cupa.csv')
+    raise ValueError(f'Dataset {dataset_name} not supported.')
 
 
 def get_key_from_model_name(model_name: str) -> str:
