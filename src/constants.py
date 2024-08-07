@@ -12,10 +12,16 @@ PRETRAINED_MODEL_NAMES = {
 }
 
 # Names of OpenAI models
-GPT_3_5_0613 = 'gpt-3.5-turbo-0613'
+GPT_3_5_0613 = 'gpt_3_5_0613'  # This is an older deprecated model and should not be used.
+GPT_3_5_1106 = 'gpt_3_5_1106'
+GPT_4o_240806 = 'gpt_4o_240806'
+GPT_4o_MINI_240718 = 'gpt_4o_mini_240718'
 
 OPENAI_MODEL_NAMES = {
     GPT_3_5_0613: "gpt-3.5-turbo-0613",
+    GPT_3_5_1106: 'gpt-3.5-turbo-1106',
+    GPT_4o_240806: 'gpt-4o-2024-08-06',
+    GPT_4o_MINI_240718: 'gpt-4o-mini-2024-07-18',
 }
 
 # COLUMN NAMES

@@ -1,6 +1,7 @@
 import openai
 
 from src.llm_adapter.base import BaseLLMAdapter
+from src.constants import OPENAI_MODEL_NAMES
 
 
 class OpenAIAdapter(BaseLLMAdapter):
@@ -13,7 +14,7 @@ class OpenAIAdapter(BaseLLMAdapter):
     def convert_single_text(self, text: str) -> str:
         try:
             response = openai.ChatCompletion.create(
-                model=self.model_name,
+                model=OPENAI_MODEL_NAMES[self.model_name],
                 messages=[{'role': 'system', 'content': self.prompt}, {'role': 'user', 'content': f"Text: '{text}'"}],
                 temperature=self.temperature,
                 response_format={"type": 'text'}
