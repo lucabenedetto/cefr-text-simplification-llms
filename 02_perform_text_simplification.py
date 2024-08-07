@@ -11,6 +11,9 @@ Prompts can have different components:
 import os
 import pickle
 from src.utils import init_adapter
+from src.constants import GPT_3_5_0613
+from constants import CERD
+from utils import get_key_from_model_name
 
 
 def main(model_name, prompt_id, dataset_name, target_cefr_level, access_key):
@@ -23,9 +26,9 @@ def main(model_name, prompt_id, dataset_name, target_cefr_level, access_key):
 
 
 if __name__ == '__main__':
-    param_model_name = 'model_name'
-    param_prompt_id = 'prompt_id'
-    param_dataset_name = 'dataset_name'  # CERD, CAM_MCQ
-    param_target_level = 'target_level'  # A1, A2, ..., C2
-    param_access_key = 'asdf'
+    param_model_name = GPT_3_5_0613
+    param_prompt_id = '00'
+    param_dataset_name = CERD  # CERD, CAM_MCQ
+    param_target_level = 'A2'  # A1, A2, ..., C2
+    param_access_key = get_key_from_model_name(param_model_name)
     main(param_model_name, param_prompt_id, param_dataset_name, param_target_level, param_access_key)
