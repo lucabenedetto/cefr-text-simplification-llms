@@ -28,7 +28,7 @@ def main(model_name: str,
          access_key: str,
          save_as_dataframe: bool = True,
          ):
-    adapter = init_adapter(model_name, access_key=access_key)
+    adapter = init_adapter(model_name, access_key=access_key, use_gpu=True)
     dataset = get_dataset(dataset_name)[:10]  # the [:10] is TMP for preliminary experimetns.
     converted_texts = adapter.convert_texts(prompt_id, dataset, target_cefr_level)
     output_path = f'data/output/{dataset_name}/{model_name}/{prompt_id}'
