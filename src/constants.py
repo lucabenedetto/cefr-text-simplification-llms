@@ -11,6 +11,13 @@ PRETRAINED_MODEL_NAMES = {
     MISTRAL_7B_v02: "mistralai/Mistral-7B-Instruct-v0.2"
 }
 
+# Names of OpenAI models
+GPT_3_5_0613 = 'gpt-3.5-turbo-0613'
+
+OPENAI_MODEL_NAMES = {
+    GPT_3_5_0613: "gpt-3.5-turbo-0613",
+}
+
 # COLUMN NAMES
 COLUMN_TEXT_ID = 'text_id'
 COLUMN_TEXT = 'text'
