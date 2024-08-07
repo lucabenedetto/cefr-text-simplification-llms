@@ -16,6 +16,10 @@ from src.constants import (
     GPT_3_5_0613,
     GPT_4o_MINI_240718,
     GEMMA_2B,
+    GEMMA_7B,
+    LLAMA_3_1_8B,
+    MINICPM_v2_6,
+    MISTRAL_7B_v03,
 )
 from constants import CERD, CAM_MCQ
 from utils import get_key_from_model_name, get_dataset
@@ -43,9 +47,9 @@ def main(model_name: str,
 
 
 if __name__ == '__main__':
-    param_model_name = GEMMA_2B
-    param_prompt_id = '00'
-    param_dataset_name = CERD  # CERD, CAM_MCQ
-    param_target_level = 'A2'  # A1, A2, ..., C2
-    param_access_key = get_key_from_model_name(param_model_name)
-    main(param_model_name, param_prompt_id, param_dataset_name, param_target_level, param_access_key)
+    for param_model_name in (GEMMA_7B, LLAMA_3_1_8B, MINICPM_v2_6, MISTRAL_7B_v03):
+        param_prompt_id = '00'
+        param_dataset_name = CERD  # CERD, CAM_MCQ
+        param_target_level = 'A2'  # A1, A2, ..., C2
+        param_access_key = get_key_from_model_name(param_model_name)
+        main(param_model_name, param_prompt_id, param_dataset_name, param_target_level, param_access_key)
