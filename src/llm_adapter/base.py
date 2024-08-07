@@ -13,7 +13,7 @@ class BaseLLMAdapter(object):
     def convert_texts(self, prompt_id: str, dataset: pd.DataFrame, target_cefr_level: str) -> Dict[str, str]:
         self.prompt = get_prompt_from_prompt_id(prompt_id=prompt_id, target_cefr_level=target_cefr_level)
         converted_texts = dict()
-        for text_id, text in dataset[COLUMN_TEXT_ID, COLUMN_TEXT].values:
+        for text_id, text in dataset[[COLUMN_TEXT_ID, COLUMN_TEXT]].values:
             if text_id not in converted_texts.keys():
                 converted_texts[text_id] = self.convert_single_text(text)
         return converted_texts
