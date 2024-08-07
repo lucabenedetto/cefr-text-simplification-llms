@@ -33,7 +33,7 @@ def main(model_name: str,
          save_as_dataframe: bool = True,
          ):
     adapter = init_adapter(model_name, access_key=access_key, use_gpu=True)
-    dataset = get_dataset(dataset_name)[:10]  # the [:10] is TMP for preliminary experimetns.
+    dataset = get_dataset(dataset_name)  # the [:10] is TMP for preliminary experimetns.
     converted_texts = adapter.convert_texts(prompt_id, dataset, target_cefr_level)
     output_path = f'data/output/{dataset_name}/{model_name}/{prompt_id}'
     if not os.path.exists(output_path):
@@ -47,7 +47,7 @@ def main(model_name: str,
 
 
 if __name__ == '__main__':
-    for param_model_name in (LLAMA_3_8B, MISTRAL_7B_v02):
+    for param_model_name in (GEMMA_2B, GEMMA_7B, LLAMA_3_8B):
         param_prompt_id = '00'
         param_dataset_name = CERD  # CERD, CAM_MCQ
         param_target_level = 'A2'  # A1, A2, ..., C2
