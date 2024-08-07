@@ -16,7 +16,7 @@ from constants import CERD
 from utils import get_key_from_model_name
 
 
-def main(model_name, prompt_id, dataset_name, target_cefr_level, access_key):
+def main(model_name: str, prompt_id: str, dataset_name: str, target_cefr_level: str, access_key: str):
     adapter = init_adapter(model_name, access_key=access_key)
     converted_texts = adapter.convert_texts(prompt_id, dataset_name, target_cefr_level)
     output_path = f'data/output/{dataset_name}/{model_name}/{prompt_id}'
