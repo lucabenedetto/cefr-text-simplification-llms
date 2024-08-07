@@ -17,7 +17,7 @@ from src.constants import (
     GPT_4o_MINI_240718,
     GEMMA_2B,
     GEMMA_7B,
-    LLAMA_3_1_8B,
+    LLAMA_3_8B,
     MINICPM_v2_6,
     MISTRAL_7B_v02,
 )
@@ -47,7 +47,7 @@ def main(model_name: str,
 
 
 if __name__ == '__main__':
-    for param_model_name in (LLAMA_3_1_8B, MISTRAL_7B_v02):
+    for param_model_name in (LLAMA_3_8B, MISTRAL_7B_v02):
         param_prompt_id = '00'
         param_dataset_name = CERD  # CERD, CAM_MCQ
         param_target_level = 'A2'  # A1, A2, ..., C2
