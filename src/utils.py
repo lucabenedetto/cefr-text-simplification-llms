@@ -3,9 +3,9 @@ from src.constants import PRETRAINED_MODEL_NAMES, OPENAI_MODEL_NAMES
 
 
 def init_adapter(model_name: str,
-                 access_key: str = None,
+                 access_key: str,
                  use_gpu: bool = None,
-                 temperature: float = 0
+                 temperature: float = 0,
                  ) -> BaseLLMAdapter:
     if model_name in OPENAI_MODEL_NAMES.keys():
         return OpenAIAdapter(model_name=model_name, api_key=access_key, temperature=temperature)
