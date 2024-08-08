@@ -7,3 +7,4 @@ transformers==4.38.2
 torch==2.1.0
 matplotlib==3.9.0
 accelerate==0.24.1 # needed for GPU
+textstat==0.7.4
