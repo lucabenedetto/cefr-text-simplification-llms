@@ -62,7 +62,11 @@ Provide only a JSON file with the following structure:
         for index, row in questions_df.iterrows():
             user_prompt = f"""Reading passage: "{row[COLUMN_TEXT]}"
 Question: "{row[COLUMN_QUESTION]}"
-Options: "['{row[COLUMN_OPTION_A]}', '{row[COLUMN_OPTION_B]}', '{row[COLUMN_OPTION_C]}', '{row[COLUMN_OPTION_D]}']"
+Options: 
+a) "{row[COLUMN_OPTION_A]}"
+b) "{row[COLUMN_OPTION_B]}"
+c) "{row[COLUMN_OPTION_C]}"
+d) "{row[COLUMN_OPTION_D]}"
 """
             try:
                 response = openai.ChatCompletion.create(
@@ -77,7 +81,6 @@ Options: "['{row[COLUMN_OPTION_A]}', '{row[COLUMN_OPTION_B]}', '{row[COLUMN_OPTI
                 # this if the GPT model did not produce a response
                 answer = "{'index': -9, 'text': 'None'}"
             llm_answer_index, llm_answer_text = self.validate_answer(answer)
-            llm_answer_index = {'0': 'a', '1': 'b', '2': 'c', '3': 'd'}.get(llm_answer_index, 'x')
             new_row_df = pd.DataFrame({COLUMN_QUESTION_ID: [row[COLUMN_QUESTION_ID]],
                                        COLUMN_TEXT_ID: [row[COLUMN_TEXT_ID]],
                                        COLUMN_CORRECT_ANSWER: row[COLUMN_CORRECT_ANSWER],
@@ -94,9 +97,12 @@ Options: "['{row[COLUMN_OPTION_A]}', '{row[COLUMN_OPTION_B]}', '{row[COLUMN_OPTI
             answer_json = json.loads(answer)
             index_str = str(answer_json['index'])
             answer_text = str(answer_json['text'])
-            if not index_str.isdigit():
-                print("The index is not an integer.")
-                return '-8', 'None'
+            if index_str not in {'0', '1', '2', '3', 'a', 'b', 'c', 'd'}:
+                print(f"Index {index_str} is not a valid answer.")
+                return '-1', 'None'
+            if index_str.isdigit():
+                print("The index is an integer.")
+                return {'0': 'a', '1': 'b', '2': 'c', '3': 'd'}.get(str(index_str), 'x'), answer_text
             return str(index_str), answer_text
         except json.JSONDecodeError:
             print("The answer is not a valid JSON string.")
