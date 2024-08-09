@@ -62,3 +62,13 @@ COLUMN_NAMES = [
 COLUMN_LLM_ANSWER_INDEX = 'llm_answer_index'
 COLUMN_LLM_ANSWER_TEXT = 'llm_answer_text'
 COLUMN_LLM_ANSWER_CORRECT = 'llm_answer_correct'
+
+COLUMN_TEXT_LENGTH = 'text_length_n_words'
+
+A1 = 'A1'
+A2 = 'A2'
+B1 = 'B1'
+B2 = 'B2'
+C1 = 'C1'
+C2 = 'C2'
+CEFR_LEVELS = [A1, A2, B1, B2, C1, C2]
