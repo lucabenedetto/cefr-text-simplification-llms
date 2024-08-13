@@ -8,13 +8,13 @@ Your task is to simplify the text to make it appropriate for a learner of level 
         # With respect to the previous one, adds the request for minimising the changes to the factual content.
         return f"""You will be shown a reading passage used to evaluate the reading proficiency of learners of English as a foreign language. 
 Your task is to simplify the text to make it appropriate for a learner of level {target_cefr_level} on the Common European Framework of Reference for Languages (CEFR).
-Please minimize changes to the factual content of the reading passage while ensuring the simplified text is clear and easy to understand for an {target_cefr_level} learner."""
+Please minimize changes to the factual content of the reading passage while ensuring the simplified text is clear and easy to understand for a learner of level {target_cefr_level}."""
     if prompt_id == '02':
         # With respect to the previous one, adds the information about the knowledge of the learners of a specific CEFR level.
         return f"""You will be shown a reading passage used to evaluate the reading proficiency of learners of English as a foreign language. 
 Your task is to simplify the text to make it appropriate for a learner of level {target_cefr_level} on the Common European Framework of Reference for Languages (CEFR).
 A student of level {target_cefr_level} {get_cefr_levels_description(target_cefr_level)}
-Please minimize changes to the factual content of the reading passage while ensuring the simplified text is clear and easy to understand for an {target_cefr_level} learner."""
+Please minimize changes to the factual content of the reading passage while ensuring the simplified text is clear and easy to understand for a learner of level {target_cefr_level}."""
     # Prompts 1x_xx
     if prompt_id == '10':
         return f"""You are a skilled English teacher preparing an exam to evaluate the reading proficiency of learners of English as a foreign language.
