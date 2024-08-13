@@ -23,8 +23,7 @@ class HuggingFaceAdapter(BaseLLMAdapter):
         input_text = self.prepare_input_text(text)
         input_ids = self.tokenizer(input_text, return_tensors="pt")
         if self.use_gpu:
-            input_ids = input_ids.to('auto')
-            # input_ids = input_ids.to('cuda')
+            input_ids = input_ids.to('cuda')
         outputs = self.model.generate(**input_ids, max_new_tokens=1000, pad_token_id=self.tokenizer.eos_token_id)  # TODO make the max_new_tokens a param
         start_index = len(input_text)  # TODO: I have to check this!
         converted_text = self.tokenizer.decode(outputs[0])[start_index:]
