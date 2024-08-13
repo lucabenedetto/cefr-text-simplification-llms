@@ -14,7 +14,8 @@ class HuggingFaceAdapter(BaseLLMAdapter):
         self.use_gpu = use_gpu
         self.tokenizer = AutoTokenizer.from_pretrained(PRETRAINED_MODEL_NAMES[model_name], token=access_token)
         if self.use_gpu:
-            self.model = AutoModelForCausalLM.from_pretrained(PRETRAINED_MODEL_NAMES[model_name], token=access_token, device_map="auto")
+            self.model = AutoModelForCausalLM.from_pretrained(PRETRAINED_MODEL_NAMES[model_name], token=access_token)  #, device_map="auto")
+            self.model.to('cuda')
         else:
             self.model = AutoModelForCausalLM.from_pretrained(PRETRAINED_MODEL_NAMES[model_name], token=access_token)
 
