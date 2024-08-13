@@ -1,3 +1,7 @@
+import pandas as pd
+from src.constants import CEFR_LEVELS
+
+
 def get_prompt_from_prompt_id(prompt_id: str, target_cefr_level: str) -> str:
     # Prompts 0x_xx
     if prompt_id == '00':
@@ -28,6 +32,24 @@ You have to minimize the changes to the factual content of the reading passage, 
 Starting from the given text, you have to simplify to make it appropriate for a learner of level {target_cefr_level} on the Common European Framework of Reference for Languages (CEFR).
 A student of level {target_cefr_level} {get_cefr_levels_description(target_cefr_level)}
 You have to minimize the changes to the factual content of the reading passage, in order not to affect the answerability of the questions associated with it."""
+    if prompt_id == 'w01':
+        return f"""You will be shown a reading passage used to evaluate the reading proficiency of learners of English as a foreign language. 
+Your task is to simplify the text to make it appropriate for a learner of level {target_cefr_level} on the Common European Framework of Reference for Languages (CEFR).
+Please minimize changes to the factual content of the reading passage while ensuring the simplified text is clear and easy to understand for a learner of level {target_cefr_level}.
+
+The following words are suitable for learners of level {target_cefr_level} or lower, and the simplified text should contain almost only suitable words:
+{get_words_list_from_level(target_cefr_level)}
+"""
+    if prompt_id == 'w02':
+        return f"""You will be shown a reading passage used to evaluate the reading proficiency of learners of English as a foreign language. 
+Your task is to simplify the text to make it appropriate for a learner of level {target_cefr_level} on the Common European Framework of Reference for Languages (CEFR).
+Please minimize changes to the factual content of the reading passage while ensuring the simplified text is clear and easy to understand for a learner of level {target_cefr_level}.
+
+A student of level {target_cefr_level} {get_cefr_levels_description(target_cefr_level)}
+
+The following words are suitable for learners of level {target_cefr_level} or lower, and the simplified text should contain almost only suitable words:
+{get_words_list_from_level(target_cefr_level)}
+"""
     raise ValueError(f'Invalid prompt id: {prompt_id}')
 
 
@@ -41,3 +63,13 @@ def get_cefr_levels_description(student_level):
         'C2': 'can understand with ease virtually everything heard or read; can summarise information from different spoken and written sources, reconstructing arguments and accounts in a coherent presentation; can express him/herself spontaneously, very fluently and precisely, differentiating finer shades of meaning even in more complex situations.',
     }
     return dict_cefr_level_descriptions[student_level]
+
+
+def get_words_list_from_level(student_level, word_list_source: str = 'olp_en_cefrj'):
+    output_string = ""
+    for cefr in CEFR_LEVELS:
+        cefr_df = pd.read_csv(f'data/input/{word_list_source}_vocabulary_profile_{cefr}.csv')
+        output_string += f'"{cefr}": ' + str(cefr_df['headword'].values.tolist())[1:-1] + '\n'
+        if cefr == student_level:
+            break
+    return output_string
