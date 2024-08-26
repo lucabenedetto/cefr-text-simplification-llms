@@ -2,7 +2,7 @@ from typing import Dict, Set, Tuple
 import pandas as pd
 import string
 
-from src.constants import CEFR_LEVELS, A1, A2, B1, B2, C1, C2, COLUMN_TEXT_LENGTH
+from src.constants import CEFR_LEVELS, A1, A2, B1, B2, C1, C2, COLUMN_TEXT_LENGTH, COLUMN_TEXT_ID
 
 
 class WordListEvaluator:
@@ -23,10 +23,11 @@ class WordListEvaluator:
             cefr_df = pd.read_csv(f'data/input/{word_list_source}_vocabulary_profile_{cefr}.csv')
             dict_word_lists[cefr] = set(cefr_df['headword'].values)
 
-        df = pd.DataFrame(columns=CEFR_LEVELS + [COLUMN_TEXT_LENGTH])
+        df = pd.DataFrame(columns=[COLUMN_TEXT_ID] + CEFR_LEVELS + [COLUMN_TEXT_LENGTH])
         for text_id, text in dict_texts.items():
             word_list_frequencies, text_length = self.measure_word_frequency_single_text(text, dict_word_lists)
             new_row_df = pd.DataFrame({
+                COLUMN_TEXT_ID: [text_id],
                 A1: [word_list_frequencies[A1]],
                 A2: [word_list_frequencies[A2]],
                 B1: [word_list_frequencies[B1]],
