@@ -49,6 +49,19 @@ def boxplot_count_words_per_level(word_lists_per_level, title, filename=None):
         if filename is None:
             plt.show()
         else:
+            plt.savefig(f'output_figures/boxplot_count_words_per_level/{filename}_{level}_frac.png')
+        plt.close(fig)
+
+        fig, ax = plt.subplots(figsize=(6, 4.2))
+        ax.boxplot([local_df[level] for local_df in word_lists_per_level])
+        ax.set_title(f"Words from level {level} | {title}")
+        ax.set_xticks(range(1, len(CEFR_LEVELS)+1))
+        ax.set_xticklabels(CEFR_LEVELS)
+        ax.set_ylabel(f"N. of words in text.")
+        plt.tight_layout()
+        if filename is None:
+            plt.show()
+        else:
             plt.savefig(f'output_figures/boxplot_count_words_per_level/{filename}_{level}.png')
         plt.close(fig)
 
