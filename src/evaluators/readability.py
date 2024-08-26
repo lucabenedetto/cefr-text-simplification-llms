@@ -13,6 +13,7 @@ from src.evaluators.constants import (
     DALE_CHALL,
     READABILITY_INDEXES,
 )
+from src.constants import COLUMN_TEXT_ID
 
 
 class ReadabilityEvaluator:
@@ -21,10 +22,11 @@ class ReadabilityEvaluator:
         pass
 
     def compute_readability_indexes(self, dict_texts: Dict[str, 'str']) -> pd.DataFrame:
-        df = pd.DataFrame(columns=READABILITY_INDEXES)
+        df = pd.DataFrame(columns=[COLUMN_TEXT_ID] + list(READABILITY_INDEXES))
         for text_id, text in dict_texts.items():
             readability_scores = self.compute_readability_indexes_single_text(text)
             new_row_df = pd.DataFrame({
+                COLUMN_TEXT_ID: [text_id],
                 FLESCH_READING_EASE: [readability_scores[FLESCH_READING_EASE]],
                 FLESCH_KINCAID_GRADE_LEVEL: [readability_scores[FLESCH_KINCAID_GRADE_LEVEL]],
                 AUTOMATED_READABILITY_INDEX: [readability_scores[AUTOMATED_READABILITY_INDEX]],
