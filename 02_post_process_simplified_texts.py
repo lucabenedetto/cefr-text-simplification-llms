@@ -27,21 +27,18 @@ def _post_process_llama_simplified_text(text, text_id):
     text = text.replace("\n\n", "\n")
     text = try_split_by(text, f'Here is the simplified text:', 1)
     # it often refers to the requested level
-    for level in ['A1', 'A2']:
-        text = try_split_by(text, f'Here is a simplified version of the text for an {level} level learner:', 1)
-        text = try_split_by(text, f'Here is a simplified version of the text for an {level} learner:', 1)
-        text = try_split_by(text, f'Here is the simplified text for an {level} learner:', 1)
-        text = try_split_by(text, f'Here is the simplified text, adapted for an {level} learner:', 1)
-        text = try_split_by(text, f'Here is a simplified version of the text, adapted for an {level} level learner:', 1)
-        text = try_split_by(text, f'Here is a simplified version of the text, suitable for an {level} learner:', 1)
-        text = try_split_by(text, f'Here is the simplified text, suitable for an {level} learner:', 1)
-    for level in ['B1', 'B2', 'C1']:
-        text = try_split_by(text, f'Here is a simplified version of the text for a {level} level learner:', 1)
-        text = try_split_by(text, f'Here is a simplified version of the text for a {level} learner:', 1)
-        text = try_split_by(text, f'Here is the simplified text for a {level} learner:', 1)
-        text = try_split_by(text, f'Here is the simplified text, adapted for a {level} learner:', 1)
-        text = try_split_by(text, f'Here is a simplified version of the text, adapted for a {level} level learner:', 1)
-        text = try_split_by(text, f'Here is a simplified version of the text, suitable for a {level} learner:', 1)
+    for level in CEFR_LEVELS[:-1]:
+        if level in ['A1', 'A2']:
+            ax = 'an'
+        else:
+            ax = 'a'
+        text = try_split_by(text, f'Here is a simplified version of the text for {ax} {level} level learner:', 1)
+        text = try_split_by(text, f'Here is a simplified version of the text for {ax} {level} learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text for {ax} {level} learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text, adapted for {ax} {level} learner:', 1)
+        text = try_split_by(text, f'Here is a simplified version of the text, adapted for {ax} {level} level learner:', 1)
+        text = try_split_by(text, f'Here is a simplified version of the text, suitable for {ax} {level} learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text, suitable for {ax} {level} learner:', 1)
     # It often describes what it did, although this was not requested.
     text = try_split_by(text, 'Note:', 0)
     text = try_split_by(text, 'I changed the text by:', 0)
