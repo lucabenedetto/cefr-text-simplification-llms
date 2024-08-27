@@ -62,7 +62,7 @@ def _post_process_llama_simplified_text(text, text_id):
         text = try_split_by(text, f'I hope this simplified version helps {level} learners understand the text better!', 0)
     # text = try_split_by(text, '**Simplified Text:**', 1)
     if len(text) < 5:
-        return '-3'
+        return '-10'
     return text
 
 
@@ -73,7 +73,7 @@ def _post_process_gpt_simplified_text(text, text_id):
     text = try_split_by(text, '**Simplified Text:**', 1)
     text = try_split_by(text, 'Text: ', 1)
     if len(text) < 5:
-        return '-3'
+        return '-10'
     return text
 
 
@@ -124,7 +124,7 @@ def _post_process_gemma_simplified_text(text, text_id):
     # # # Here it actually performed a very strict summarisation.
     # "This passage tells about the favourite memories of five celebrities of different nationalities when they took train journeys."
     if len(text) < 5:
-        return '-3'
+        return '-10'
     return text
 
 
