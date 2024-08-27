@@ -22,7 +22,7 @@ def try_split_by(text, split_by, keep_idx):
 
 
 def _post_process_llama_simplified_text(text, text_id):
-    text = try_split_by(text, '|end_header_id|>', 1)
+    text = try_split_by(text, 'end_header_id|>', 1)
     text = try_split_by(text, '<|eot_id|>', 0)
     text = text.replace("\n\n", "\n")
     text = try_split_by(text, f'Here is the simplified text:', 1)
@@ -34,16 +34,27 @@ def _post_process_llama_simplified_text(text, text_id):
             ax = 'a'
         text = try_split_by(text, f'Here is a simplified version of the text for {ax} {level} level learner:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text for {ax} {level} learner:', 1)
-        text = try_split_by(text, f'Here is the simplified text for {ax} {level} learner:', 1)
-        text = try_split_by(text, f'Here is the simplified text, adapted for {ax} {level} learner:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, adapted for {ax} {level} level learner:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, suitable for {ax} {level} learner:', 1)
+        text = try_split_by(text, f'Here is a simplified version of the text, suitable for {ax} {level} level learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text for {ax} {level} learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text for {ax} {level} level learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text, adapted for {ax} {level} level learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text, adapted for {ax} {level} learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text, suitable for {ax} {level} level learner:', 1)
         text = try_split_by(text, f'Here is the simplified text, suitable for {ax} {level} learner:', 1)
     # It often describes what it did, although this was not requested.
     text = try_split_by(text, 'Note:', 0)
+    text = try_split_by(text, 'Changes made:', 0)
     text = try_split_by(text, 'I changed the text by:', 0)
+    text = try_split_by(text, 'I simplified the text by:', 0)
+    text = try_split_by(text, 'I made the following changes:', 0)
+    text = try_split_by(text, 'I changed the following:', 0)
     text = try_split_by(text, 'I changed the text to make it easier to understand by:', 0)
     text = try_split_by(text, 'I made the following changes to simplify the text:', 0)
+    text = try_split_by(text, 'I changed the text to make it easier to understand', 0)  # "...for a learer of level XX by:"
+    text = try_split_by(text, 'I minimized changes to the factual content while making the text easier to understand', 0)  # "...for a learer of level XX by:"
+    text = try_split_by(text, 'I made some changes to the original text to make it more accessible to a B1 learner, including:', 0)  # "...for a learer of level XX by:"
     # Some "motivational" comments
     text = try_split_by(text, "Let me know if you'd like me to simplify anything further!", 0)
     text = try_split_by(text, "I hope this simplified text meets your requirements!", 0)
