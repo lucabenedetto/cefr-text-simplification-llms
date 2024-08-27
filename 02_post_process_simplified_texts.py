@@ -87,19 +87,30 @@ def _post_process_gemma_simplified_text(text, text_id):
         # Please note that this is just a sample text and may not be representative of all texts on the same topic.
         # "Please note that this is just a sample text and may not be representative of all texts at this level."
         return "-2"
+    if 'What is the main idea of the passage?' in text:
+        return "-3"
     text = text[3:]
     text = text.replace("\n\n", "\n")
     text = text.split('<eos>')[0]
     text = try_split_by(text, '**Simplified Text:**', 1)
+    text = try_split_by(text, '**Simplified version:**', 1)
     text = try_split_by(text, 'Simplified Text:', 1)
     text = try_split_by(text, 'Simplified text:', 1)
     text = try_split_by(text, '**Answer:**', 1)  # Sometimes answer is used to refer to the simplified text
     text = try_split_by(text, '**Please simplify the passage below:**', 1)
     text = try_split_by(text, 'Sure, here is the simplified text:', 1)
     text = try_split_by(text, 'Sure, here is the simplified passage:', 1)
+    text = try_split_by(text, 'Sure, here is the simplified version of the text:', 1)
+    text = try_split_by(text, 'Sure, here is the simplified text you requested:', 1)
     text = try_split_by(text, 'Here is the simplified text:', 1)
     text = try_split_by(text, 'The following is a simplified version of the text:', 1)
     text = try_split_by(text, '## Reading Comprehension Questions', 0)
+    # Provides some descriptors which are not needed nor requested
+    text = try_split_by(text, 'It is written in a style that', 0)
+    text = try_split_by(text, 'It is written in a clear and concise style', 0)
+    text = try_split_by(text, 'The text is written in a style that', 0)
+    text = try_split_by(text, 'The text is written in a complex style', 0)
+
     # An example (from Gemma 7B):
     # ## Reading Comprehension Questions
     # 1. Where is Lake Nipissing located?
