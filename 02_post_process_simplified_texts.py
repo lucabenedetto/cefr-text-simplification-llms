@@ -98,6 +98,10 @@ def _post_process_gemma_simplified_text(text, text_id):
     text = try_split_by(text, 'Simplified text:', 1)
     text = try_split_by(text, '**Answer:**', 1)  # Sometimes answer is used to refer to the simplified text
     text = try_split_by(text, '**Please simplify the passage below:**', 1)
+    for level in CEFR_LEVELS[:-1]:
+        text = try_split_by(text, f'Please help me simplify the text for a learner of {level} level on the CEFR.', 1)
+        text = try_split_by(text, f'Please help me simplify the text for a learner of {level} on the CEFR.', 1)
+        text = try_split_by(text, f'Please help me simplify the text for a learner of {level} English.', 1)
     text = try_split_by(text, 'Sure, here is the simplified text:', 1)
     text = try_split_by(text, 'Sure, here is the simplified passage:', 1)
     text = try_split_by(text, 'Sure, here is the simplified version of the text:', 1)
@@ -136,6 +140,8 @@ def _post_process_gemma_simplified_text(text, text_id):
     # "This passage tells about the favourite memories of five celebrities of different nationalities when they took train journeys."
     if len(text) < 5:
         return '-10'
+    if 'Answer the following questions based on the text:' in text:
+        return '-1'
     return text
 
 
