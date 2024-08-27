@@ -1,6 +1,14 @@
 import os
 import pandas as pd
-from src.constants import CEFR_LEVELS, COLUMN_TEXT_ID, COLUMN_TEXT_LEVEL, GEMMA_2B, GEMMA_7B
+from src.constants import (
+    CEFR_LEVELS,
+    COLUMN_TEXT_ID,
+    COLUMN_TEXT_LEVEL,
+    GEMMA_2B,
+    GEMMA_7B,
+    GPT_4o_240806,
+    GPT_4o_MINI_240718,
+)
 from utils import get_dataset
 from constants import CERD, CAM_MCQ
 
@@ -10,6 +18,10 @@ def try_split_by(text, split_by, keep_idx):
         return text.split(split_by)[keep_idx]
     except IndexError:
         return text
+
+
+def _post_process_gpt_simplified_text(text, text_id):
+    pass
 
 
 def _post_process_gemma_simplified_text(text, text_id):
@@ -53,11 +65,14 @@ def _post_process_gemma_simplified_text(text, text_id):
     return text
 
 
-def post_process_gemma_responses(model_name, dataset_name, prompt_id, target_level):
+def post_process_responses(model_name, dataset_name, prompt_id, target_level):
     path = f'data/output/{dataset_name}/{model_name}/{prompt_id}'
     df_simplified_texts = pd.read_csv(os.path.join(path, f'df_converted_texts_{target_level}.csv'))
     df_simplified_texts = filter_df_simplified_texts_by_cefr_level(df_simplified_texts, dataset_name, target_level)
-    df_simplified_texts['processed_text'] = df_simplified_texts.apply(lambda r: _post_process_gemma_simplified_text(r['text'], r['text_id']), axis=1)
+    if model_name in [GEMMA_2B, GEMMA_7B]:
+        df_simplified_texts['processed_text'] = df_simplified_texts.apply(lambda r: _post_process_gemma_simplified_text(r['text'], r['text_id']), axis=1)
+    if model_name in [GPT_4o_240806, GPT_4o_MINI_240718]:
+        df_simplified_texts['processed_text'] = df_simplified_texts.apply(lambda r: _post_process_gpt_simplified_text(r['text'], r['text_id']), axis=1)
     df_simplified_texts = df_simplified_texts.drop('text', axis=1)
     df_simplified_texts = df_simplified_texts.rename(columns={'processed_text': 'text'})
     df_simplified_texts.to_csv(os.path.join(path, f'df_converted_texts_post_processed_{target_level}.csv'), index=False)
@@ -77,8 +92,12 @@ if __name__ == '__main__':
     for param_dataset_name in [CERD, CAM_MCQ]:
         for param_target_level in CEFR_LEVELS[:-1]:  # Because I don't perform text simplification to level C2
             for param_prompt_id in ['01', '02', '11', '12']:
-                post_process_gemma_responses(GEMMA_2B, param_dataset_name, param_prompt_id, param_target_level)
-                post_process_gemma_responses(GEMMA_7B, param_dataset_name, param_prompt_id, param_target_level)
+                post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, param_target_level)
+                post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, param_target_level)
+                post_process_responses(GPT_4o_MINI_240718, param_dataset_name, param_prompt_id, param_target_level)
+                post_process_responses(GPT_4o_240806, param_dataset_name, param_prompt_id, param_target_level)
             for param_prompt_id in ['w01', 'w02']:
-                post_process_gemma_responses(GEMMA_2B, param_dataset_name, param_prompt_id, 'A1')
-                post_process_gemma_responses(GEMMA_7B, param_dataset_name, param_prompt_id, 'A1')
+                post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, 'A1')
+                post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, 'A1')
+                post_process_responses(GPT_4o_MINI_240718, param_dataset_name, param_prompt_id, 'A1')
+                post_process_responses(GPT_4o_240806, param_dataset_name, param_prompt_id, 'A1')
