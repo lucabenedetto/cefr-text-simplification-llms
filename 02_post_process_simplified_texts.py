@@ -8,6 +8,7 @@ from src.constants import (
     GEMMA_7B,
     GPT_4o_240806,
     GPT_4o_MINI_240718,
+    LLAMA_3_8B,
 )
 from utils import get_dataset
 from constants import CERD, CAM_MCQ
@@ -21,6 +22,12 @@ def try_split_by(text, split_by, keep_idx):
 
 
 def _post_process_gpt_simplified_text(text, text_id):
+    text = text.replace("\n\n", "\n")
+    text = try_split_by(text, '**Simplified Text:**', 1)
+    return text
+
+
+def _post_process_llama_simplified_text(text, text_id):
     text = text.replace("\n\n", "\n")
     text = try_split_by(text, '**Simplified Text:**', 1)
     return text
@@ -81,8 +88,12 @@ def post_process_responses(model_name, dataset_name, prompt_id, target_level):
     df_simplified_texts = filter_df_simplified_texts_by_cefr_level(df_simplified_texts, dataset_name, target_level)
     if model_name in [GEMMA_2B, GEMMA_7B]:
         df_simplified_texts['processed_text'] = df_simplified_texts.apply(lambda r: _post_process_gemma_simplified_text(r['text'], r['text_id']), axis=1)
-    if model_name in [GPT_4o_240806, GPT_4o_MINI_240718]:
+    elif model_name in [GPT_4o_240806, GPT_4o_MINI_240718]:
         df_simplified_texts['processed_text'] = df_simplified_texts.apply(lambda r: _post_process_gpt_simplified_text(r['text'], r['text_id']), axis=1)
+    elif model_name in [LLAMA_3_8B]:
+        df_simplified_texts['processed_text'] = df_simplified_texts.apply(lambda r: _post_process_llama_simplified_text(r['text'], r['text_id']), axis=1)
+    else:
+        raise ValueError(f'Model {model_name} not recognized.')
     df_simplified_texts = df_simplified_texts.drop('text', axis=1)
     df_simplified_texts = df_simplified_texts.rename(columns={'processed_text': 'text'})
     df_simplified_texts.to_csv(os.path.join(path, f'df_converted_texts_post_processed_{target_level}.csv'), index=False)
