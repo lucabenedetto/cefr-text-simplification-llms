@@ -102,12 +102,12 @@ if __name__ == '__main__':
     for param_dataset_name in [CERD, CAM_MCQ]:
         for param_target_level in CEFR_LEVELS[:-1]:  # Because I don't perform text simplification to level C2
             for param_prompt_id in ['01', '02', '11', '12']:
-                # post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, param_target_level)
-                # post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, param_target_level)
+                post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, param_target_level)
+                post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, param_target_level)
                 post_process_responses(GPT_4o_MINI_240718, param_dataset_name, param_prompt_id, param_target_level)
                 post_process_responses(GPT_4o_240806, param_dataset_name, param_prompt_id, param_target_level)
             for param_prompt_id in ['w01', 'w02']:
-                # post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, 'A1')
-                # post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, 'A1')
+                post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, 'A1')
+                post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, 'A1')
                 post_process_responses(GPT_4o_MINI_240718, param_dataset_name, param_prompt_id, 'A1')
                 post_process_responses(GPT_4o_240806, param_dataset_name, param_prompt_id, 'A1')
