@@ -176,15 +176,13 @@ def _post_process_gpt_simplified_text(text, text_id):
 def _post_process_gemma_simplified_text(text, text_id):
     # print(f"\n- - - - - - - - - -\nDoing text_id {text_id}.")
     # # These are some common errors which I found by manually looking at the texts
-    if '**Questions:**' in text:
-        return "-1"
+    # if '**Questions:**' in text:
+    #     return "-1"
     if 'Please note that this is just a sample text' in text:
         # I found (Gemma 2B):
         # Please note that this is just a sample text and may not be representative of all texts on the same topic.
         # "Please note that this is just a sample text and may not be representative of all texts at this level."
         return "-2"
-    if 'What is the main idea of the passage?' in text:
-        return "-3"
     text = text[3:]
     text = text.replace("\n\n", "\n")
     text = text.split('<eos>')[0]
@@ -195,6 +193,8 @@ def _post_process_gemma_simplified_text(text, text_id):
     text = try_split_by(text, 'Please provide an explanation for the changes made to the text in order to simplify it', 0)
     text = try_split_by(text, '**Answer:**', 1)  # Sometimes answer is used to refer to the simplified text
     text = try_split_by(text, '**Changes:**', 0)
+    text = try_split_by(text, '**Questions:**', 0)
+    text = try_split_by(text, 'What is the main idea of the passage?', 0)
     text = try_split_by(text, '**Please simplify the passage below:**', 1)
     for level in CEFR_LEVELS[:-1]:
         text = try_split_by(text, f'Please help me simplify the text for a learner of {level} level on the CEFR.', 1)
