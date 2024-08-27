@@ -32,6 +32,8 @@ def _post_process_llama_simplified_text(text, text_id):
             ax = 'an'
         else:
             ax = 'a'
+        text = try_split_by(text, f"Here's a simplified version of the text, suitable for a learner of English at level {level}:", 1)
+        text = try_split_by(text, f'Here is a rewritten version of the text, simplified for a learner of level {level}:', 1)
         text = try_split_by(text, f'Here is a rewritten version of the text, simplified for a level {level} reader:', 1)
         text = try_split_by(text, f'Here is a rewritten version of the text at a level suitable for {ax} {level} learner:', 1)
         text = try_split_by(text, f'Here is a rewritten version of the text at a level suitable for a learner of English at {level}:', 1)
@@ -39,13 +41,17 @@ def _post_process_llama_simplified_text(text, text_id):
         text = try_split_by(text, f'Here is a simplified version of the text, adapted for {ax} {level} level learner:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, adapted for a learner of level {level}:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, adapted for a learner of level {level} on the Common European Framework of Reference for Languages (CEFR):', 1)
+        text = try_split_by(text, f'Here is a simplified version of the text, suitable for {level} level learners:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, suitable for {ax} {level} learner:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, suitable for {ax} {level} level learner:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, suitable for a learner of English at level {level}:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, suitable for a learner of level {level}:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, suitable for a learner of level {level} on the Common European Framework of Reference for Languages:', 1)
+        text = try_split_by(text, f'Here is a simplified version of the text, suitable for a level {level} learner:', 1)
+        text = try_split_by(text, f'Here is a simplified version of the text, suitable for learners of English at level {level}:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text for {ax} {level} learner:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text for {ax} {level} level learner:', 1)
+        text = try_split_by(text, f'Here is a simplified version of the text for a learner of English at level {level}:', 1)
         text = try_split_by(text, f'Here is the rewritten text at a level {level}:', 1)
         text = try_split_by(text, f'Here is the simplified text, adapted for {ax} {level} learner:', 1)
         text = try_split_by(text, f'Here is the simplified text, adapted for {ax} {level} level learner:', 1)
@@ -53,6 +59,7 @@ def _post_process_llama_simplified_text(text, text_id):
         text = try_split_by(text, f'Here is the simplified text, adapted for a learner of level {level}:', 1)
         text = try_split_by(text, f'Here is the simplified text, adapted for a learner of level {level} on the CEFR:', 1)
         text = try_split_by(text, f'Here is the simplified text, adapted for a level {level} learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text, adapted for a level {level} reader:', 1)
         text = try_split_by(text, f'Here is the simplified text, adapted to a level {level} reading proficiency:', 1)
         text = try_split_by(text, f'Here is the simplified text, adjusted to a level {level} CEFR:', 1)
         text = try_split_by(text, f'Here is the simplified text, suitable for {ax} {level} learner:', 1)
@@ -62,11 +69,14 @@ def _post_process_llama_simplified_text(text, text_id):
         text = try_split_by(text, f'Here is the simplified text, suitable for a learner of level {level}:', 1)
         text = try_split_by(text, f'Here is the simplified text for {ax} {level} learner:', 1)
         text = try_split_by(text, f'Here is the simplified text for {ax} {level} level learner:', 1)
+        text = try_split_by(text, f'Here is the simplified text for a learner of English at level {level}:', 1)
         text = try_split_by(text, f'Here is the simplified text for a learner of level {level}:', 1)
         text = try_split_by(text, f'Here is the simplified text for a level {level} learner:', 1)
         text = try_split_by(text, f'Here is the simplified version of the text, adapted for a learner of level {level}:', 1)
+        text = try_split_by(text, f'Here is the simplified version of the text, suitable for {level} level learners:', 1)
         text = try_split_by(text, f'Here is the simplified version of the text, suitable for a learner of level {level} on the Common European Framework of Reference for Languages (CEFR):', 1)
         text = try_split_by(text, f'Here is the simplified version of the text, suitable for a learner of level {level}:', 1)
+        text = try_split_by(text, f'Here is the simplified version of the text for a learner of level {level}:', 1)
         text = try_split_by(text, f'To simplify the text for a learner of level {level}, I will make some adjustments to the vocabulary, sentence structure, and paragraph organization while maintaining the factual content. Here is the revised text:', 1)
 
     # It often describes what it did, although this was not requested.
@@ -80,22 +90,48 @@ def _post_process_llama_simplified_text(text, text_id):
     text = try_split_by(text, 'Here are the changes made:', 0)
     text = try_split_by(text, 'I changed the text to make it easier to understand by:', 0)
     text = try_split_by(text, 'I made the following changes to simplify the text:', 0)
+    text = try_split_by(text, 'I made some changes to simplify the text, including:', 0)
     text = try_split_by(text, 'The text has been simplified by:', 0)
+    text = try_split_by(text, 'I made minimal changes to the factual content to ensure that the questions associated with the text remain answerable.', 0)
+    text = try_split_by(text, 'I made minimal changes to the factual content to ensure that the questions associated with the passage remain answerable.', 0)
     text = try_split_by(text, 'I changed the text to make it easier to understand', 0)  # "...for a learer of level XX by:"
     text = try_split_by(text, 'I minimized changes to the factual content while making the text easier to understand', 0)  # "...for a learer of level XX by:"
-    text = try_split_by(text, 'I made some changes to the original text to make it more accessible to a B1 learner, including:', 0)  # "...for a learer of level XX by:"
-    # Some "motivational" comments
+    text = try_split_by(text, 'I made minimal changes to the text while keeping the main points and ideas intact.', 0)  # "...for a learer of level XX by:"
+    text = try_split_by(text, 'I minimized changes to the factual content to maintain the original meaning and answerability of the questions.', 0)  # "...for a learer of level XX by:"
+
     text = try_split_by(text, "Let me know if you'd like me to simplify anything further!", 0)
     text = try_split_by(text, "I hope this simplified text meets your requirements!", 0)
     for level in CEFR_LEVELS[:-1]:
+        text = try_split_by(text,f'I made some changes to the original text to make it more accessible to a {level} learner, including:',0)  # "...for a learer of level XX by:"
+        text = try_split_by(text, f'I have kept the main points of the original text, but simplified the language and sentence structure to make it more accessible to a learner of level {level}.', 0)
+        text = try_split_by(text, f'I made minor changes to the text to simplify the language and sentence structure, while keeping the main ideas and content intact. I also removed some of the more complex vocabulary and sentence structures to make it more accessible to a learner of level {level}.', 0)
+        text = try_split_by(text, f'I made minimal changes to the original text to make it more accessible for a level B1 learner.', 0)
         text = try_split_by(text, f'I hope this simplified version helps {level} learners understand the text better!', 0)
+        text = try_split_by(text, f'I made some changes to the text to make it more accessible to a level {level} learner, including:', 0)
+        text = try_split_by(text, f'I made some changes to the text to make it more accessible to a level {level} learner, including:', 0)
         text = try_split_by(text, f'I have maintained the original factual content of the text while simplifying the language and sentence structure to make it more accessible to a learner of level {level} on the CEFR.', 0)
         text = try_split_by(text, f'I made minimal changes to the original text to ensure that the factual content remains intact, while simplifying the language to make it accessible to a level {level} learner.', 0)
         text = try_split_by(text, f'I made some changes to the original text to make it easier for a level {level} learner to understand, including:', 0)
+        text = try_split_by(text, f'I made some changes to the original text to make it more accessible to a {level} level learner, including:', 0)
+        text = try_split_by(text, f'I made minimal changes to the original text to ensure that the main points and ideas are still present, while simplifying the language to make it accessible to a learner of level {level}.', 0)
+        text = try_split_by(text, f'I made some minor changes to the original text to make it more accessible to a level {level} learner, such as:', 0)
         text = try_split_by(text, f'I made minimal changes to the original text to ensure that the main ideas and concepts are still present, while simplifying the language and sentence structure to make it more accessible to a learner of level {level}.', 0)
         text = try_split_by(text, f'I minimized changes to the factual content of the original text, while simplifying the language and sentence structure to make it more accessible to a learner of level {level}.', 0)
         text = try_split_by(text, f'I made minimal changes to the factual content of the text, while simplifying the language and sentence structure to make it more accessible to a learner of level {level}. I also removed some of the more complex vocabulary and phrases, while keeping the main ideas and arguments intact.', 0)
         text = try_split_by(text, f'I made minor changes to the text to make it more accessible to a level {level} learner, including:', 0)
+        text = try_split_by(text, f'I made some changes to the original text to make it more accessible to a level {level} learner, including:', 0)
+        text = try_split_by(text, f'I have kept the main ideas and concepts of the original text, but simplified the language and sentence structure to make it more accessible to a learner of level {level}.', 0)
+        text = try_split_by(text, f'I minimized the changes to the factual content of the passage to ensure that the questions associated with it remain answerable. I used simpler vocabulary and sentence structures to make it more accessible to a learner of level {level}.', 0)
+        text = try_split_by(text, f'I made minimal changes to the factual content to ensure that the questions associated with the passage remain answerable. The main changes were to simplify the vocabulary, sentence structure, and some of the more complex ideas to make it more accessible to a level {level} learner.', 0)
+        text = try_split_by(text, f'I minimized changes to the factual content of the passage, focusing on simplifying the language and sentence structure to make it more accessible to a learner of level B1. I also removed some complex vocabulary and phrases, such as ""problematically abstract notion"" and ""corollary of having no set working hours"", to make the text more understandable for a level {level} reader.', 0)
+        text = try_split_by(text, f'I made some changes to the original text to make it more accessible to a learner of level {level}, while keeping the main events and storyline intact. I simplified vocabulary, sentence structures, and grammar to make it easier to understand.', 0)
+        text = try_split_by(text, f'I minimized the changes to the factual content of the passage to maintain the integrity of the original text. I simplified the vocabulary and sentence structures to make it more accessible to a learner of level {level}.', 0)
+        text = try_split_by(text, f'I minimized changes to the factual content of the passage while simplifying the language to make it more accessible to a level {level} learner.', 0)
+        text = try_split_by(text, f'I minimized changes to the factual content to maintain the integrity of the original text, while simplifying the language to make it accessible to a learner of English at level {level}.', 0)
+        text = try_split_by(text, f'I made minimal changes to the original text to make it more accessible to a level {level} learner, while still maintaining the core message and factual content.', 0)
+        text = try_split_by(text, f'I minimized the changes to the factual content of the passage, focusing on simplifying vocabulary, sentence structure, and sentence length to make it more accessible to a level {level} learner.', 0)
+        text = try_split_by(text, f'I minimized changes to the factual content of the passage while simplifying the language and sentence structure to make it more accessible to a learner of level {level}.', 0)
+        text = try_split_by(text, f'I made some changes to the original text to make it more accessible to a learner of English at level {level}, such as:', 0)
     # text = try_split_by(text, '**Simplified Text:**', 1)
     if len(text) < 5:
         return '-10'
