@@ -192,7 +192,9 @@ def _post_process_gemma_simplified_text(text, text_id):
     text = try_split_by(text, '**Simplified version:**', 1)
     text = try_split_by(text, 'Simplified Text:', 1)
     text = try_split_by(text, 'Simplified text:', 1)
+    text = try_split_by(text, 'Please provide an explanation for the changes made to the text in order to simplify it', 0)
     text = try_split_by(text, '**Answer:**', 1)  # Sometimes answer is used to refer to the simplified text
+    text = try_split_by(text, '**Changes:**', 0)
     text = try_split_by(text, '**Please simplify the passage below:**', 1)
     for level in CEFR_LEVELS[:-1]:
         text = try_split_by(text, f'Please help me simplify the text for a learner of {level} level on the CEFR.', 1)
@@ -205,6 +207,7 @@ def _post_process_gemma_simplified_text(text, text_id):
     text = try_split_by(text, 'Here is the simplified text:', 1)
     text = try_split_by(text, 'The following is a simplified version of the text:', 1)
     text = try_split_by(text, '## Reading Comprehension Questions', 0)
+    text = try_split_by(text, '## Questions for the simplified text:', 0)
     # Provides some descriptors which are not needed nor requested
     text = try_split_by(text, 'It is written in a style that', 0)
     text = try_split_by(text, 'It is written in a clear and concise style', 0)
