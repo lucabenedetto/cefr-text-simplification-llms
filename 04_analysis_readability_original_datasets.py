@@ -30,6 +30,7 @@ def boxplot_readability_indexes(read_idxs_level, title, filename=None):
         ax.set_title(f"{readability_index} | {title}")
         ax.set_xticks(range(1, len(CEFR_LEVELS)+1))
         ax.set_xticklabels(CEFR_LEVELS)
+        ax.grid(axis='y')
         # this is to use if I want the num. of texts per level in the plot.
         # ax.set_xticklabels([cefr + f'\n(n.={len(read_idxs_level[i])})' for i, cefr in enumerate(CEFR_LEVELS)])
         plt.tight_layout()

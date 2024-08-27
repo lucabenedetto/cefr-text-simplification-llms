@@ -29,6 +29,7 @@ def boxplot_text_length(word_lists_per_level, title, filename=None):
     ax.set_title(f"Text length (n. words) | {title}")
     ax.set_xticks(range(1, len(CEFR_LEVELS)+1))
     ax.set_xticklabels(CEFR_LEVELS)
+    ax.grid(axis='y')
     plt.tight_layout()
     if filename is None:
         plt.show()
@@ -45,6 +46,7 @@ def boxplot_count_words_per_level(word_lists_per_level, title, filename=None):
         ax.set_xticks(range(1, len(CEFR_LEVELS)+1))
         ax.set_xticklabels(CEFR_LEVELS)
         ax.set_ylabel(f"Fraction of words in text.")
+        ax.grid(axis='y')
         plt.tight_layout()
         if filename is None:
             plt.show()
@@ -58,6 +60,7 @@ def boxplot_count_words_per_level(word_lists_per_level, title, filename=None):
         ax.set_xticks(range(1, len(CEFR_LEVELS)+1))
         ax.set_xticklabels(CEFR_LEVELS)
         ax.set_ylabel(f"N. of words in text.")
+        ax.grid(axis='y')
         plt.tight_layout()
         if filename is None:
             plt.show()
