@@ -21,7 +21,9 @@ def try_split_by(text, split_by, keep_idx):
 
 
 def _post_process_gpt_simplified_text(text, text_id):
-    pass
+    text = text.replace("\n\n", "\n")
+    text = try_split_by(text, '**Simplified Text:**', 1)
+    return text
 
 
 def _post_process_gemma_simplified_text(text, text_id):
@@ -46,6 +48,14 @@ def _post_process_gemma_simplified_text(text, text_id):
     text = try_split_by(text, 'Sure, here is the simplified passage:', 1)
     text = try_split_by(text, 'Here is the simplified text:', 1)
     text = try_split_by(text, 'The following is a simplified version of the text:', 1)
+    text = try_split_by(text, '## Reading Comprehension Questions', 0)
+    # An example (from Gemma 7B):
+    # ## Reading Comprehension Questions
+    # 1. Where is Lake Nipissing located?
+    # 2. What do the fishermen build on the ice?
+    # 3. What do you need to wear when you go fishing on Lake Nipissing in winter?
+    # 4. What is the process of catching fish on Lake Nipissing?
+    # 5. What does Bob Marvisch like to do when he has caught fish?"
     text = try_split_by(text, '**Additional Notes:**', 0)
     # An example (from Gemma 2B):
     # **Additional Notes:**
@@ -92,12 +102,12 @@ if __name__ == '__main__':
     for param_dataset_name in [CERD, CAM_MCQ]:
         for param_target_level in CEFR_LEVELS[:-1]:  # Because I don't perform text simplification to level C2
             for param_prompt_id in ['01', '02', '11', '12']:
-                post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, param_target_level)
-                post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, param_target_level)
+                # post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, param_target_level)
+                # post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, param_target_level)
                 post_process_responses(GPT_4o_MINI_240718, param_dataset_name, param_prompt_id, param_target_level)
                 post_process_responses(GPT_4o_240806, param_dataset_name, param_prompt_id, param_target_level)
             for param_prompt_id in ['w01', 'w02']:
-                post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, 'A1')
-                post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, 'A1')
+                # post_process_responses(GEMMA_2B, param_dataset_name, param_prompt_id, 'A1')
+                # post_process_responses(GEMMA_7B, param_dataset_name, param_prompt_id, 'A1')
                 post_process_responses(GPT_4o_MINI_240718, param_dataset_name, param_prompt_id, 'A1')
                 post_process_responses(GPT_4o_240806, param_dataset_name, param_prompt_id, 'A1')
