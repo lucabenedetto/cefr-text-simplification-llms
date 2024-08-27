@@ -40,6 +40,7 @@ def _post_process_llama_simplified_text(text, text_id):
         text = try_split_by(text, f'Here is a rewritten version of the text at a level suitable for {ax} {level} learner:', 1)
         text = try_split_by(text, f'Here is a rewritten version of the text at a level suitable for a learner of English at {level}:', 1)
         text = try_split_by(text, f'Here is a rewritten version of the text at a level suitable for a learner of English at level {level}:', 1)
+        text = try_split_by(text, f'Here is a rewritten version of the text at the {level} level:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, adapted for {ax} {level} level learner:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, adapted for a learner of English at the {level} level:', 1)
         text = try_split_by(text, f'Here is a simplified version of the text, adapted for a learner of level {level}:', 1)
@@ -119,6 +120,7 @@ def _post_process_llama_simplified_text(text, text_id):
     text = try_split_by(text, 'I minimized changes to the factual content while making the text easier to understand', 0)  # "...for a learer of level XX by:"
     text = try_split_by(text, 'I made minimal changes to the text while keeping the main points and ideas intact.', 0)  # "...for a learer of level XX by:"
     text = try_split_by(text, 'I minimized changes to the factual content to maintain the original meaning and answerability of the questions.', 0)  # "...for a learer of level XX by:"
+    text = try_split_by(text, 'I minimized changes to the factual content to ensure that the questions associated with the passage remain answerable.', 0)  # "...for a learer of level XX by:"
 
     text = try_split_by(text, "Let me know if you'd like me to simplify anything further!", 0)
     text = try_split_by(text, "I hope this simplified text meets your requirements!", 0)
