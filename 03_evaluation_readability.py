@@ -43,4 +43,28 @@ def compute_and_save_readability_indexes():
 
 if __name__ == '__main__':
     # this is to store all the computed readability indexes
-    compute_and_save_readability_indexes()
+    # compute_and_save_readability_indexes()
+
+    # this is to plot the results
+    for dataset_name_param in [CERD, CAM_MCQ, 'aggregate']:
+        for model_name_param in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
+            for prompt_id_param in ['01', '02', '11', '12']:
+                if dataset_name_param in [CERD, CAM_MCQ]:
+                    readability_indexes_per_level = [
+                        pd.read_csv(f'data/evaluation/{dataset_name_param}/{model_name_param}/readability_indexes_{prompt_id_param}_target_{level}.csv')
+                        for level in CEFR_LEVELS[:-1]
+                    ]
+                    boxplot_readability_indexes(readability_indexes_per_level, f"{dataset_name_param} | {model_name_param} | {prompt_id_param}", f"{dataset_name_param}_{model_name_param}_{prompt_id_param}")
+                else:
+                    readability_indexes_per_level = [
+                        pd.read_csv(f'data/evaluation/{CERD}/{model_name_param}/readability_indexes_{prompt_id_param}_target_{level}.csv')
+                        for level in CEFR_LEVELS[:-1]
+                    ]
+                    readability_indexes_per_level_cam_mcq = [
+                        pd.read_csv(f'data/evaluation/{CAM_MCQ}/{model_name_param}/readability_indexes_{prompt_id_param}_target_{level}.csv')
+                        for level in CEFR_LEVELS[:-1]
+                    ]
+                    for idx in range(len(readability_indexes_per_level)):
+                        readability_indexes_per_level[idx] = pd.concat(
+                            [readability_indexes_per_level[idx], readability_indexes_per_level_cam_mcq[idx]], ignore_index=True)
+                    boxplot_readability_indexes(readability_indexes_per_level, f"{dataset_name_param} | {model_name_param} | {prompt_id_param}", f"{dataset_name_param}_{model_name_param}_{prompt_id_param}")
