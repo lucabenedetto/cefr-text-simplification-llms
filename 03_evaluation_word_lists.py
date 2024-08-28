@@ -23,6 +23,8 @@ def word_list_evaluation(dataset_name: str, model_name: str, prompt_id: str, tar
     word_lists = word_lists[~word_lists['error']]
     if len(word_lists) != len_0:
         print(f"Removed {len_0 - len(word_lists)} rows.")
+    for level in CEFR_LEVELS:
+        word_lists[level + '_frac'] = word_lists.apply(lambda r: r[level]/r['text_length_n_words'], axis=1)
     word_lists.to_csv(f'data/evaluation/{dataset_name}/{model_name}/word_lists_{prompt_id}_target_{target_level}.csv', index=False)
 
 
