@@ -10,6 +10,7 @@ from src.constants import (
     GPT_4o_MINI_240718,
     LLAMA_3_8B,
     COLUMN_TEXT,
+    COLUMN_TEXT_LEVEL,
 )
 from constants import CERD, CAM_MCQ
 from transformers import pipeline
@@ -67,6 +68,30 @@ def within1_score(score, level):
 if __name__ == '__main__':
     # perform CEFR evaluation of the original datasets
     cefr_evaluation_original_datasets()
+    for dataset_name in [CERD, CAM_MCQ]:
+        df = pd.read_csv(f'data/evaluation/{dataset_name}/cefr_classification_original_dataset.csv',)
+        df['not_evaluated'] = df.apply(lambda r: r['predictions'] == "{'label': '00', 'score': 0.0}", axis=1)
+        df['score'] = df.apply(lambda r: ast.literal_eval(r['predictions'][1:-1])['label'] if not r['not_evaluated'] else 'NA', axis=1)
+        df['score_correct'] = df.apply(lambda r: r['score'] == r[COLUMN_TEXT_LEVEL], axis=1)
+        df['score_within1'] = df.apply(lambda r: within1_score(r['score'], r[COLUMN_TEXT_LEVEL]), axis=1)
+        print(dataset_name, np.mean(df['score_correct']), np.mean(df['score_within1']), len(df[~df['not_evaluated']]))
+        for cefr_level in CEFR_LEVELS:
+            local_df = df[df[COLUMN_TEXT_LEVEL] == cefr_level]
+            print(dataset_name, cefr_level, np.mean(local_df['score_correct']), np.mean(local_df['score_within1']), len(local_df[~local_df['not_evaluated']]))
+    # cerd 0.22356495468277945 0.3323262839879154 117
+    # cerd A1 nan nan 0
+    # cerd A2 0.578125 0.953125 64
+    # cerd B1 0.6166666666666667 0.7666666666666667 46
+    # cerd B2 0.0 0.0 0
+    # cerd C1 0.0 0.04477611940298507 4
+    # cerd C2 0.0 0.0 3
+    # cam_mcq 0.16981132075471697 0.1761006289308176 140
+    # cam_mcq A1 nan nan 0
+    # cam_mcq A2 nan nan 0
+    # cam_mcq B1 0.9642857142857143 1.0 140
+    # cam_mcq B2 0.0 0.0 0
+    # cam_mcq C1 0.0 0.0 0
+    # cam_mcq C2 0.0 0.0 0
 
     # perform the CEFR evaluation and store the results
     for param_model_name in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
