@@ -52,7 +52,7 @@ if __name__ == '__main__':
                         pd.read_csv(f'data/evaluation/{dataset_name_param}/{model_name_param}/readability_indexes_{prompt_id_param}_target_{level}.csv')
                         for level in CEFR_LEVELS[:-1]
                     ]
-                    boxplot_readability_indexes(readability_indexes_per_level, f"{dataset_name_param} | {model_name_param} | {prompt_id_param}", f"{dataset_name_param}_{model_name_param}_{prompt_id_param}")
+                    boxplot_readability_indexes(readability_indexes_per_level, f"{dataset_name_param} | {model_name_param} | {prompt_id_param}", f"{dataset_name_param}_{model_name_param}_{prompt_id_param}", figsize=(3, 2.1))
                 else:
                     readability_indexes_per_level = [
                         pd.read_csv(f'data/evaluation/{CERD}/{model_name_param}/readability_indexes_{prompt_id_param}_target_{level}.csv')
@@ -65,4 +65,4 @@ if __name__ == '__main__':
                     for idx in range(len(readability_indexes_per_level)):
                         readability_indexes_per_level[idx] = pd.concat(
                             [readability_indexes_per_level[idx], readability_indexes_per_level_cam_mcq[idx]], ignore_index=True)
-                    boxplot_readability_indexes(readability_indexes_per_level, f"{dataset_name_param} | {model_name_param} | {prompt_id_param}", f"{dataset_name_param}_{model_name_param}_{prompt_id_param}")
+                    boxplot_readability_indexes(readability_indexes_per_level, f"{dataset_name_param} | {model_name_param} | {prompt_id_param}", f"{dataset_name_param}_{model_name_param}_{prompt_id_param}", figsize=(3, 2.1))
