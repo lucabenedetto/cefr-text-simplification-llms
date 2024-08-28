@@ -1,5 +1,4 @@
 import pickle
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from src.constants import (
@@ -12,7 +11,6 @@ from src.constants import (
 )
 from constants import CERD, CAM_MCQ
 from src.evaluators.readability import ReadabilityEvaluator
-from src.evaluators.constants import READABILITY_INDEXES
 from src.utils_plotting import boxplot_readability_indexes
 
 
