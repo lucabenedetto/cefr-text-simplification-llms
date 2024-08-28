@@ -59,34 +59,26 @@ def line_plot_word_lists_count(word_lists_per_level, title, filename=None):
     plt.close(fig)
 
 
-def boxplot_count_words_per_level(word_lists_per_level, title, filename=None):
+def boxplot_count_words_per_level(word_lists_per_level, title, mode='frac', filename=None):
+    if mode not in ['frac', 'count']:
+        raise ValueError(f"Mode must be either 'frac' or 'count', not '{mode}'")
     for level in CEFR_LEVELS:
         fig, ax = plt.subplots(figsize=(6, 4.2))
-        ax.boxplot([local_df[level + '_frac'] for local_df in word_lists_per_level])
+        if mode == 'frac':
+            ax.boxplot([local_df[f'{level}_{mode}'] for local_df in word_lists_per_level])
+            ax.set_ylabel(f"Fraction of words in text.")
+        else:
+            ax.boxplot([local_df[f'{level}'] for local_df in word_lists_per_level])
+            ax.set_ylabel(f"N. of words in text.")
         ax.set_title(f"Words from level {level} | {title}")
         ax.set_xticks(range(1, len(CEFR_LEVELS)+1))
         ax.set_xticklabels(CEFR_LEVELS)
-        ax.set_ylabel(f"Fraction of words in text.")
         ax.grid(axis='y')
         plt.tight_layout()
         if filename is None:
             plt.show()
         else:
-            plt.savefig(f'output_figures/boxplot_count_words_per_level/{filename}_{level}_frac.png')
-        plt.close(fig)
-
-        fig, ax = plt.subplots(figsize=(6, 4.2))
-        ax.boxplot([local_df[level] for local_df in word_lists_per_level])
-        ax.set_title(f"Words from level {level} | {title}")
-        ax.set_xticks(range(1, len(CEFR_LEVELS)+1))
-        ax.set_xticklabels(CEFR_LEVELS)
-        ax.set_ylabel(f"N. of words in text.")
-        ax.grid(axis='y')
-        plt.tight_layout()
-        if filename is None:
-            plt.show()
-        else:
-            plt.savefig(f'output_figures/boxplot_count_words_per_level/{filename}_{level}.png')
+            plt.savefig(f'output_figures/boxplot_count_words_per_level/{filename}_{level}_{mode}.png')
         plt.close(fig)
 
 
@@ -102,9 +94,10 @@ def main():
     boxplot_text_length(word_lists_count_per_level_cam_mcq, title='Cambridge MCQ', filename=CAM_MCQ)
     boxplot_text_length(word_lists_count_per_level_aggregate, title='Aggregate', filename='aggregate')
 
-    boxplot_count_words_per_level(word_lists_count_per_level_cerd, title='CERD', filename=CERD)
-    boxplot_count_words_per_level(word_lists_count_per_level_cam_mcq, title='Cambridge MCQ', filename=CAM_MCQ)
-    boxplot_count_words_per_level(word_lists_count_per_level_aggregate, title='Aggregate', filename='aggregate')
+    for mode in ['frac', 'count']:
+        boxplot_count_words_per_level(word_lists_count_per_level_cerd, title='CERD', mode=mode, filename=CERD)
+        boxplot_count_words_per_level(word_lists_count_per_level_cam_mcq, title='Cambridge MCQ', mode=mode, filename=CAM_MCQ)
+        boxplot_count_words_per_level(word_lists_count_per_level_aggregate, title='Aggregate', mode=mode, filename='aggregate')
 
     line_plot_word_lists_count(word_lists_count_per_level_cerd, title='CERD', filename=CERD)
     line_plot_word_lists_count(word_lists_count_per_level_cam_mcq, title='Cambridge MCQ', filename=CAM_MCQ)
