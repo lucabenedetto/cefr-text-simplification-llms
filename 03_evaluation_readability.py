@@ -1,4 +1,5 @@
 import pickle
+import numpy as np
 from collections import defaultdict
 
 import pandas as pd
@@ -9,13 +10,23 @@ from src.constants import (
     LLAMA_3_8B,
     GPT_4o_240806,
     GPT_4o_MINI_240718,
-    CEFR_LEVELS,
+    CEFR_LEVELS, CEFR_TO_INT,
 )
 from constants import CERD, CAM_MCQ
+from src.utils_plotting import boxplot_readability_indexes
 from utils import get_readability_indexes_per_target_level
 from src.evaluators.readability import ReadabilityEvaluator
-from src.evaluators.constants import READABILITY_INDEXES
-from src.utils_plotting import boxplot_readability_indexes
+from src.evaluators.constants import (
+    READABILITY_INDEXES,
+    FLESCH_READING_EASE,
+    FLESCH_KINCAID_GRADE_LEVEL,
+    AUTOMATED_READABILITY_INDEX,
+    GUNNING_FOG_INDEX,
+    COLEMAN_LIAU,
+    SMOG_INDEX,
+    LINSEAR_WRITE_FORMULA,
+    DALE_CHALL,
+)
 
 
 def readability_evaluation(dataset_name: str, model_name: str, prompt_id: str, target_level: str):
@@ -76,17 +87,19 @@ if __name__ == '__main__':
     df_cam_mcq = pd.read_csv('data/input/mcq_cupa.csv')
     readability_indexes_per_level_aggregate = get_readability_indexes_per_target_level(pd.concat([df_cerd, df_cam_mcq], axis=0))
     mean_readability_indexes = defaultdict(list)
+    median_readability_indexes = defaultdict(list)
     std_readability_indexes = defaultdict(list)
     for idx, cefr in enumerate(CEFR_LEVELS):
         for readability_index in READABILITY_INDEXES:
             mean_readability_indexes[readability_index].append(readability_indexes_per_level_aggregate[idx][readability_index].mean())
+            median_readability_indexes[readability_index].append(readability_indexes_per_level_aggregate[idx][readability_index].median())
             std_readability_indexes[readability_index].append(readability_indexes_per_level_aggregate[idx][readability_index].std())
     for readability_index in READABILITY_INDEXES:
         print(readability_index)
         for idx in range(len(CEFR_LEVELS)):
             print("%.2f (%.2f),"
                   % (mean_readability_indexes[readability_index][idx], std_readability_indexes[readability_index][idx]), end=" ")
-
+    # Below the readability indexes of the (aggregated) original datasets.
     # flesch_reading_ease
     # nan (nan), 87.16 (7.69), 74.55 (7.07), 73.32 (8.52), 61.09 (10.99), 61.07 (12.05),
     # flesch_kincaid_grade_level
@@ -103,4 +116,46 @@ if __name__ == '__main__':
     # nan (nan), 6.04 (1.83), 9.34 (2.40), 9.87 (3.35), 11.13 (3.67), 12.73 (4.54),
     # dale_chall
     # nan (nan), 6.64 (0.60), 7.69 (0.69), 7.87 (0.62), 8.71 (0.83), 8.65 (0.72),
-
+    result_df = pd.DataFrame(columns=['dataset_name', 'model', 'prompt_id', 'target_level'] + list(READABILITY_INDEXES))
+    for dataset_name_param in [CERD, CAM_MCQ, 'aggregate']:
+        for model_name_param in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
+            for prompt_id_param in ['01', '02', '11', '12']:
+                if dataset_name_param in [CERD, CAM_MCQ]:
+                    readability_indexes_per_level = [
+                        pd.read_csv(f'data/evaluation/{dataset_name_param}/{model_name_param}/readability_indexes_{prompt_id_param}_target_{level}.csv')
+                        for level in CEFR_LEVELS[:-1]
+                    ]
+                else:
+                    readability_indexes_per_level = [
+                        pd.read_csv(f'data/evaluation/{CERD}/{model_name_param}/readability_indexes_{prompt_id_param}_target_{level}.csv')
+                        for level in CEFR_LEVELS[:-1]
+                    ]
+                    readability_indexes_per_level_cam_mcq = [
+                        pd.read_csv(f'data/evaluation/{CAM_MCQ}/{model_name_param}/readability_indexes_{prompt_id_param}_target_{level}.csv')
+                        for level in CEFR_LEVELS[:-1]
+                    ]
+                    for idx in range(len(readability_indexes_per_level)):
+                        readability_indexes_per_level[idx] = pd.concat(
+                            [readability_indexes_per_level[idx], readability_indexes_per_level_cam_mcq[idx]], ignore_index=True)
+                for idx, cefr in enumerate(CEFR_LEVELS[:-1]):
+                    new_row_df = pd.DataFrame({
+                        'dataset_name': [dataset_name_param],
+                        'model': [model_name_param],
+                        'prompt_id': [prompt_id_param],
+                        'target_level': [cefr],
+                        FLESCH_READING_EASE: [readability_indexes_per_level[idx][FLESCH_READING_EASE].median()],
+                        FLESCH_KINCAID_GRADE_LEVEL: [readability_indexes_per_level[idx][FLESCH_KINCAID_GRADE_LEVEL].median()],
+                        AUTOMATED_READABILITY_INDEX: [readability_indexes_per_level[idx][AUTOMATED_READABILITY_INDEX].median()],
+                        GUNNING_FOG_INDEX: [readability_indexes_per_level[idx][GUNNING_FOG_INDEX].median()],
+                        COLEMAN_LIAU: [readability_indexes_per_level[idx][COLEMAN_LIAU].median()],
+                        SMOG_INDEX: [readability_indexes_per_level[idx][SMOG_INDEX].median()],
+                        LINSEAR_WRITE_FORMULA: [readability_indexes_per_level[idx][LINSEAR_WRITE_FORMULA].median()],
+                        DALE_CHALL: [readability_indexes_per_level[idx][DALE_CHALL].median()],
+                    })
+                    result_df = pd.concat([result_df, new_row_df], ignore_index=True)
+    for read_idx in READABILITY_INDEXES:
+        result_df[f'{read_idx}_ref_median'] = result_df.apply(lambda r: median_readability_indexes[read_idx][CEFR_TO_INT[r['target_level']]], axis=1)
+    result_df = result_df[~result_df['target_level'].isin(['A1', 'C2'])]
+    for read_idx in READABILITY_INDEXES:
+        result_df[f'{read_idx}_error'] = result_df.apply(lambda r: np.abs(r[read_idx]-r[f'{read_idx}_ref_median']), axis=1)
+    result_df.to_csv(f'data/evaluation/errors_median_readability_indexes.csv')
