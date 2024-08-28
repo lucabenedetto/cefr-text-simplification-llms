@@ -1,4 +1,6 @@
 import pickle
+from collections import defaultdict
+
 import pandas as pd
 
 from src.constants import (
@@ -10,7 +12,9 @@ from src.constants import (
     CEFR_LEVELS,
 )
 from constants import CERD, CAM_MCQ
+from utils import get_readability_indexes_per_target_level
 from src.evaluators.readability import ReadabilityEvaluator
+from src.evaluators.constants import READABILITY_INDEXES
 from src.utils_plotting import boxplot_readability_indexes
 
 
@@ -41,7 +45,7 @@ def compute_and_save_readability_indexes():
 
 if __name__ == '__main__':
     # this is to store all the computed readability indexes
-    # compute_and_save_readability_indexes()
+    compute_and_save_readability_indexes()
 
     # this is to plot the results
     for dataset_name_param in [CERD, CAM_MCQ, 'aggregate']:
@@ -66,3 +70,37 @@ if __name__ == '__main__':
                         readability_indexes_per_level[idx] = pd.concat(
                             [readability_indexes_per_level[idx], readability_indexes_per_level_cam_mcq[idx]], ignore_index=True)
                     boxplot_readability_indexes(readability_indexes_per_level, f"{dataset_name_param} | {model_name_param} | {prompt_id_param}", f"{dataset_name_param}_{model_name_param}_{prompt_id_param}", figsize=(3, 2.1))
+
+    # this is for the results in the table
+    df_cerd = pd.read_csv('data/input/cerd.csv')
+    df_cam_mcq = pd.read_csv('data/input/mcq_cupa.csv')
+    readability_indexes_per_level_aggregate = get_readability_indexes_per_target_level(pd.concat([df_cerd, df_cam_mcq], axis=0))
+    mean_readability_indexes = defaultdict(list)
+    std_readability_indexes = defaultdict(list)
+    for idx, cefr in enumerate(CEFR_LEVELS):
+        for readability_index in READABILITY_INDEXES:
+            mean_readability_indexes[readability_index].append(readability_indexes_per_level_aggregate[idx][readability_index].mean())
+            std_readability_indexes[readability_index].append(readability_indexes_per_level_aggregate[idx][readability_index].std())
+    for readability_index in READABILITY_INDEXES:
+        print(readability_index)
+        for idx in range(len(CEFR_LEVELS)):
+            print("%.2f (%.2f),"
+                  % (mean_readability_indexes[readability_index][idx], std_readability_indexes[readability_index][idx]), end=" ")
+
+    # flesch_reading_ease
+    # nan (nan), 87.16 (7.69), 74.55 (7.07), 73.32 (8.52), 61.09 (10.99), 61.07 (12.05),
+    # flesch_kincaid_grade_level
+    # nan (nan), 4.29 (1.57), 7.19 (1.37), 7.39 (1.78), 9.72 (2.26), 10.02 (2.62),
+    # automated_readability_index
+    # nan (nan), 5.08 (2.15), 8.71 (1.77), 8.98 (2.22), 11.68 (2.69), 12.00 (3.00),
+    # gunning_fog_index
+    # nan (nan), 5.90 (1.25), 8.93 (1.32), 9.32 (1.70), 11.44 (2.11), 12.11 (2.58),
+    # coleman_liau
+    # nan (nan), 5.70 (1.84), 7.98 (1.58), 8.11 (1.66), 10.17 (1.87), 9.96 (1.84),
+    # smog_index
+    # nan (nan), 7.17 (1.63), 9.64 (1.24), 9.91 (1.47), 11.92 (1.83), 12.05 (2.09),
+    # linsear_write_formula
+    # nan (nan), 6.04 (1.83), 9.34 (2.40), 9.87 (3.35), 11.13 (3.67), 12.73 (4.54),
+    # dale_chall
+    # nan (nan), 6.64 (0.60), 7.69 (0.69), 7.87 (0.62), 8.71 (0.83), 8.65 (0.72),
+
