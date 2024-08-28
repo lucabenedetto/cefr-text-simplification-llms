@@ -13,13 +13,20 @@ from src.constants import (
 from constants import CERD, CAM_MCQ
 from src.evaluators.readability import ReadabilityEvaluator
 from src.evaluators.constants import READABILITY_INDEXES
+from src.utils_plotting import boxplot_readability_indexes
 
 
 def readability_evaluation(dataset_name: str, model_name: str, prompt_id: str, target_level: str):
-    converted_texts_1 = pickle.load(open(f'data/output/{dataset_name}/{model_name}/{prompt_id}/converted_texts_{target_level}.pkl', 'rb'))
+    converted_texts_1 = pickle.load(open(f'data/output/{dataset_name}/{model_name}/{prompt_id}/converted_texts_post_processed_{target_level}.pkl', 'rb'))
     evaluator = ReadabilityEvaluator()
     print("Doing:", dataset_name, model_name, prompt_id, target_level)
     readability_indexes = evaluator.compute_readability_indexes(converted_texts_1)
+    len_0 = len(readability_indexes)
+    # TODO: make a constant with the list of possible errors, and a constant for each error.
+    readability_indexes['error'] = readability_indexes.apply(lambda r: converted_texts_1[r['text_id']] in ['-9', '-10'], axis=1)
+    readability_indexes = readability_indexes[~readability_indexes['error']]
+    if len(readability_indexes) != len_0:
+        print(f"Removed {len_0 - len(readability_indexes)} rows.")
     readability_indexes.to_csv(f'data/evaluation/{dataset_name}/{model_name}/readability_indexes_{prompt_id}_target_{target_level}.csv', index=False)
 
 
