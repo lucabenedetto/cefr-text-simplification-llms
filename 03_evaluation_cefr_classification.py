@@ -30,14 +30,14 @@ def main():
     classifier = pipeline("text-classification", model=model_name)
 
     df_cam_mcq = pd.read_csv('data/input/mcq_cupa.csv')
-    predictions = classifier(df_cam_mcq[COLUMN_TEXT])
+    predictions = classifier(df_cam_mcq[COLUMN_TEXT].tolist())
     df_cam_mcq['prediction_label'] = [x['label'] for x in predictions]
     df_cam_mcq['prediction_score'] = [x['score'] for x in predictions]
     df_cam_mcq.to_csv('data/evaluation/cam_mcq/cefr_classification_original_dataset.csv', index=False)
     print("Done Cam MCQ")
 
     df_cerd = pd.read_csv('data/input/cerd.csv')
-    predictions = classifier(df_cerd[COLUMN_TEXT])
+    predictions = classifier(df_cerd[COLUMN_TEXT].tolist())
     df_cerd['prediction_label'] = [x['label'] for x in predictions]
     df_cerd['prediction_score'] = [x['score'] for x in predictions]
     df_cerd.to_csv('data/evaluation/cerd/cefr_classification_original_dataset.csv', index=False)
