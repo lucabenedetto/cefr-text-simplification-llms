@@ -51,5 +51,5 @@ if __name__ == '__main__':
             for param_dataset_name in [CERD, CAM_MCQ]:
                 cefr_levels = CEFR_LEVELS[:-1] if param_prompt_id in ['01', '02', '11', '12'] else ['A1']
                 for param_target_level in cefr_levels:
-                    cefr_evaluation_simplified_texts(param_model_name, param_dataset_name, param_prompt_id, param_target_level)
+                    cefr_evaluation_simplified_texts(param_dataset_name, param_model_name, param_prompt_id, param_target_level)
                     print("Done:", param_model_name, param_dataset_name, param_prompt_id, param_target_level)
