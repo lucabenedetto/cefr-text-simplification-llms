@@ -25,21 +25,31 @@ from transformers import pipeline
 #     df_post_processed['diff'] = df_post_processed.apply(lambda r: r['raw_len'] - r['processed_len'], axis=1)
 #     return df_post_processed['diff'].tolist()
 
+
+def perform_cefr_classification(classifier, text):
+    try:
+        return classifier(text)
+    except:
+        return"{'label': '00', 'score': 0.0}"
+
+
 def main():
     model_name = "AbdulSami/bert-base-cased-cefr"
     classifier = pipeline("text-classification", model=model_name)
 
     df_cam_mcq = pd.read_csv('data/input/mcq_cupa.csv')
-    predictions = classifier(df_cam_mcq[COLUMN_TEXT].tolist())
-    df_cam_mcq['prediction_label'] = [x['label'] for x in predictions]
-    df_cam_mcq['prediction_score'] = [x['score'] for x in predictions]
+    # predictions = classifier(df_cam_mcq[COLUMN_TEXT].tolist())
+    df_cam_mcq['predictions'] = df_cam_mcq.apply(lambda r: perform_cefr_classification(classifier, r[COLUMN_TEXT]), axis=1)
+    # df_cam_mcq['prediction_label'] = [x['label'] for x in predictions]
+    # df_cam_mcq['prediction_score'] = [x['score'] for x in predictions]
     df_cam_mcq.to_csv('data/evaluation/cam_mcq/cefr_classification_original_dataset.csv', index=False)
     print("Done Cam MCQ")
 
     df_cerd = pd.read_csv('data/input/cerd.csv')
-    predictions = classifier(df_cerd[COLUMN_TEXT].tolist())
-    df_cerd['prediction_label'] = [x['label'] for x in predictions]
-    df_cerd['prediction_score'] = [x['score'] for x in predictions]
+    # predictions = classifier(df_cerd[COLUMN_TEXT].tolist())
+    df_cerd['predictions'] = df_cerd.apply(lambda r: perform_cefr_classification(classifier, r[COLUMN_TEXT]), axis=1)
+    # df_cerd['prediction_label'] = [x['label'] for x in predictions]
+    # df_cerd['prediction_score'] = [x['score'] for x in predictions]
     df_cerd.to_csv('data/evaluation/cerd/cefr_classification_original_dataset.csv', index=False)
     print("Done CERD")
 
