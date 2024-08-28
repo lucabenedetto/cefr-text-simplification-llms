@@ -5,7 +5,7 @@ import pandas as pd
 from src.evaluators.word_list import WordListEvaluator
 from src.constants import COLUMN_TEXT_ID, COLUMN_TEXT, COLUMN_TEXT_LEVEL, CEFR_LEVELS
 from constants import CERD, CAM_MCQ
-
+from src.utils_plotting import line_plot_word_lists_count
 
 matplotlib.rcParams['mathtext.fontset'] = 'stix'
 matplotlib.rcParams['font.family'] = 'STIXGeneral'
@@ -35,27 +35,6 @@ def boxplot_text_length(word_lists_per_level, title, filename=None):
         plt.show()
     else:
         plt.savefig(f'output_figures/boxplot_text_length/{filename}.png')
-    plt.close(fig)
-
-
-def line_plot_word_lists_count(word_lists_per_level, title, filename=None):
-    fig, ax = plt.subplots(figsize=(6, 4.2))
-    for level in CEFR_LEVELS:
-        ax.plot([local_df[level + '_frac'].mean() for local_df in word_lists_per_level], label=level)
-    ax.set_title(f"Frequency of words from vocabulary lists | {title}")
-    ax.set_xticks(range(1, len(CEFR_LEVELS)))
-    ax.set_xticklabels(CEFR_LEVELS[1:])
-    # ax.set_ylabel(f"Fraction of text made of words from vocabulary list of a specific CEFR level.")
-    ax.set_ylabel(f"Frequency of words from vocabulary list")
-    ax.set_xlabel("CEFR level of the reading passage")
-    ax.set_yscale('log')
-    ax.legend(ncols=2)
-    ax.grid(axis='y')
-    plt.tight_layout()
-    if filename is None:
-        plt.show()
-    else:
-        plt.savefig(f'output_figures/line_plot_evaluation_vocabulary_lists/line_plot_evaluation_vocabulary_lists_{filename}_frac.png')
     plt.close(fig)
 
 
