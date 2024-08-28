@@ -29,10 +29,9 @@ if __name__ == '__main__':
     test_strings = ['this is a text.', 'My apologies, I reckoned that this contemporary appliance would work.']
     model_name = "AbdulSami/bert-base-cased-cefr"
     classifier = pipeline("text-classification", model=model_name)
-    predictions = classifier(test_strings[0])
+    predictions = classifier(test_strings)
     print(predictions)
-    predictions = classifier(test_strings[1])
-    print(predictions)
+    print([(x['label'], x['score']) for x in predictions])
 
     # for param_model_name in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
     #     for param_prompt_id in ['01', '02', '11', '12', 'w01', 'w02']:
