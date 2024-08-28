@@ -1,7 +1,9 @@
 import json
 import pandas as pd
-from src.constants import OPENAI_MODEL_NAMES, PRETRAINED_MODEL_NAMES
+from src.constants import OPENAI_MODEL_NAMES, PRETRAINED_MODEL_NAMES, COLUMN_TEXT_ID, COLUMN_TEXT, COLUMN_TEXT_LEVEL, \
+    CEFR_LEVELS
 from constants import CERD, CAM_MCQ
+from src.evaluators.readability import ReadabilityEvaluator
 
 
 def get_dataset(dataset_name: str) -> pd.DataFrame:
@@ -26,3 +28,12 @@ def get_key_from_model_name(model_name: str) -> str:
         return access_token
     else:
         raise ValueError(f'Model name {model_name} not recognized.')
+
+
+def get_readability_indexes_per_target_level(df):
+    texts_dict = {text_id: text for text_id, text in df[[COLUMN_TEXT_ID, COLUMN_TEXT]].values}
+    target_level_dict = {text_id: level for text_id, level in df[[COLUMN_TEXT_ID, COLUMN_TEXT_LEVEL]].values}
+    read_idxs = ReadabilityEvaluator().compute_readability_indexes(texts_dict)
+    read_idxs[COLUMN_TEXT_LEVEL] = read_idxs.apply(lambda r: target_level_dict[r[COLUMN_TEXT_ID]], axis=1)
+    read_idxs_level = [read_idxs[read_idxs[COLUMN_TEXT_LEVEL] == level] for level in CEFR_LEVELS]
+    return read_idxs_level

@@ -1,23 +1,13 @@
 import matplotlib
 
 import pandas as pd
-from src.evaluators.readability import ReadabilityEvaluator
-from src.constants import COLUMN_TEXT_ID, COLUMN_TEXT, COLUMN_TEXT_LEVEL, CEFR_LEVELS
 from constants import CERD, CAM_MCQ
 from src.utils_plotting import boxplot_readability_indexes
+from utils import get_readability_indexes_per_target_level
 
 matplotlib.rcParams['mathtext.fontset'] = 'stix'
 matplotlib.rcParams['font.family'] = 'STIXGeneral'
 matplotlib.rcParams['font.size'] = 14
-
-
-def get_readability_indexes_per_target_level(df):
-    texts_dict = {text_id: text for text_id, text in df[[COLUMN_TEXT_ID, COLUMN_TEXT]].values}
-    target_level_dict = {text_id: level for text_id, level in df[[COLUMN_TEXT_ID, COLUMN_TEXT_LEVEL]].values}
-    read_idxs = ReadabilityEvaluator().compute_readability_indexes(texts_dict)
-    read_idxs[COLUMN_TEXT_LEVEL] = read_idxs.apply(lambda r: target_level_dict[r[COLUMN_TEXT_ID]], axis=1)
-    read_idxs_level = [read_idxs[read_idxs[COLUMN_TEXT_LEVEL] == level] for level in CEFR_LEVELS]
-    return read_idxs_level
 
 
 def main():
