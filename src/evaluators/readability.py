@@ -36,7 +36,10 @@ class ReadabilityEvaluator:
                 LINSEAR_WRITE_FORMULA: [readability_scores[LINSEAR_WRITE_FORMULA]],
                 DALE_CHALL: [readability_scores[DALE_CHALL]],
             })
-            df = pd.concat([df, new_row_df], ignore_index=True)
+            if df.empty:
+                df = new_row_df.copy()
+            else:
+                df = pd.concat([df, new_row_df], ignore_index=True)
         return df
 
     @staticmethod
