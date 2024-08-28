@@ -4,9 +4,9 @@ from src.constants import CEFR_LEVELS
 from src.evaluators.constants import READABILITY_INDEXES
 
 
-def boxplot_readability_indexes(read_idxs_level, title, filename=None):
+def boxplot_readability_indexes(read_idxs_level, title, filename=None, figsize=(6, 4.2)):
     for readability_index in READABILITY_INDEXES:
-        fig, ax = plt.subplots(figsize=(6, 4.2))
+        fig, ax = plt.subplots(figsize=figsize)
         ax.boxplot([local_df[readability_index] for local_df in read_idxs_level])
         # ax.violinplot([local_df['flesch_kincaid_grade_level'] for local_df in read_idxs_level[1:]], showmeans=False, showmedians=True)
         ax.set_title(f"{readability_index} | {title}")
