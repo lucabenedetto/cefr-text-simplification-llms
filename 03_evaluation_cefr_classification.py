@@ -37,7 +37,7 @@ def cefr_evaluation_original_datasets():
 def cefr_evaluation_simplified_texts(dataset_name, model_name, prompt_id, target_level):
     classifier = pipeline("text-classification", model="AbdulSami/bert-base-cased-cefr")
 
-    path = f'data/output/{dataset_name}/{model_name}/{prompt_id}'
+    path = f'data/processed_output/{dataset_name}/{model_name}/{prompt_id}'
     df_post_processed = pd.read_csv(os.path.join(path, f'df_converted_texts_post_processed_{target_level}.csv'))
     df_post_processed = df_post_processed[~df_post_processed[COLUMN_TEXT].isin(['-9', '-10'])]
     df_post_processed['predictions'] = df_post_processed.apply(lambda r: perform_cefr_classification(classifier, r[COLUMN_TEXT]), axis=1)
@@ -45,7 +45,7 @@ def cefr_evaluation_simplified_texts(dataset_name, model_name, prompt_id, target
 
 
 if __name__ == '__main__':
-    cefr_evaluation_original_datasets()
+    # cefr_evaluation_original_datasets()
     for param_model_name in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
         for param_prompt_id in ['01', '02', '11', '12', 'w01', 'w02']:
             for param_dataset_name in [CERD, CAM_MCQ]:
