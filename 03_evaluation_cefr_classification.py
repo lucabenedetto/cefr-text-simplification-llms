@@ -34,6 +34,7 @@ def cefr_evaluation_original_datasets():
     print("Done CERD")
 
 
+# TODO I should refactor this and use an Evaluator object
 def cefr_evaluation_simplified_texts(dataset_name, model_name, prompt_id, target_level):
     classifier = pipeline("text-classification", model="AbdulSami/bert-base-cased-cefr")
 
@@ -45,7 +46,10 @@ def cefr_evaluation_simplified_texts(dataset_name, model_name, prompt_id, target
 
 
 if __name__ == '__main__':
-    # cefr_evaluation_original_datasets()
+    # perform CEFR evaluation of the original datasets
+    cefr_evaluation_original_datasets()
+
+    # perform the CEFR evaluation and store the results
     for param_model_name in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
         for param_prompt_id in ['01', '02', '11', '12', 'w01', 'w02']:
             for param_dataset_name in [CERD, CAM_MCQ]:
