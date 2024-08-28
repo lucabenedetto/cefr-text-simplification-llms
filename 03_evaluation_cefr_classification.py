@@ -8,6 +8,7 @@ from src.constants import (
     GPT_4o_240806,
     GPT_4o_MINI_240718,
     LLAMA_3_8B,
+    COLUMN_TEXT,
 )
 from constants import CERD, CAM_MCQ
 from transformers import pipeline
@@ -24,14 +25,33 @@ from transformers import pipeline
 #     df_post_processed['diff'] = df_post_processed.apply(lambda r: r['raw_len'] - r['processed_len'], axis=1)
 #     return df_post_processed['diff'].tolist()
 
-
-if __name__ == '__main__':
-    test_strings = ['this is a text.', 'My apologies, I reckoned that this contemporary appliance would work.']
+def main():
     model_name = "AbdulSami/bert-base-cased-cefr"
     classifier = pipeline("text-classification", model=model_name)
-    predictions = classifier(test_strings)
-    print(predictions)
-    print([(x['label'], x['score']) for x in predictions])
+
+    df_cam_mcq = pd.read_csv('data/input/mcq_cupa.csv')
+    predictions = classifier(df_cam_mcq[COLUMN_TEXT])
+    df_cam_mcq['prediction_label'] = [x['label'] for x in predictions]
+    df_cam_mcq['prediction_score'] = [x['score'] for x in predictions]
+    df_cam_mcq.to_csv('data/evaluation/cam_mcq/cefr_classification_original_dataset.csv', index=False)
+    print("Done Cam MCQ")
+
+    df_cerd = pd.read_csv('data/input/cerd.csv')
+    predictions = classifier(df_cerd[COLUMN_TEXT])
+    df_cerd['prediction_label'] = [x['label'] for x in predictions]
+    df_cerd['prediction_score'] = [x['score'] for x in predictions]
+    df_cerd.to_csv('data/evaluation/cerd/cefr_classification_original_dataset.csv', index=False)
+    print("Done CERD")
+
+
+if __name__ == '__main__':
+    main()
+    # test_strings = ['this is a text.', 'My apologies, I reckoned that this contemporary appliance would work.']
+    # model_name = "AbdulSami/bert-base-cased-cefr"
+    # classifier = pipeline("text-classification", model=model_name)
+    # predictions = classifier(test_strings)
+    # print(predictions)
+    # print([(x['label'], x['score']) for x in predictions])
 
     # for param_model_name in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
     #     for param_prompt_id in ['01', '02', '11', '12', 'w01', 'w02']:
