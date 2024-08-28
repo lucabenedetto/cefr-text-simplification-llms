@@ -1,4 +1,6 @@
 import os
+import pickle
+
 import pandas as pd
 from src.constants import (
     CEFR_LEVELS,
@@ -258,6 +260,8 @@ def post_process_responses(model_name, dataset_name, prompt_id, target_level):
     df_simplified_texts = df_simplified_texts.drop('text', axis=1)
     df_simplified_texts = df_simplified_texts.rename(columns={'processed_text': 'text'})
     df_simplified_texts.to_csv(os.path.join(path, f'df_converted_texts_post_processed_{target_level}.csv'), index=False)
+    dict_simplified_texts = {text_id: text for text_id, text in df_simplified_texts[['text_id', 'text']].values}
+    pickle.dump(dict_simplified_texts, open(os.path.join(path, f'converted_texts_post_processed_{target_level}.pkl'), 'wb'))
 
 
 def filter_df_simplified_texts_by_cefr_level(df_simplified_texts, dataset_name, target_level):
