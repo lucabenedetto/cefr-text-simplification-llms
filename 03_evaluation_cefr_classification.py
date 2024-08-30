@@ -104,14 +104,21 @@ if __name__ == '__main__':
 
     # measure the accuracy of the TS task (comparing the target level and the level from the classifier).
     result_df = pd.DataFrame(columns=['dataset_name', 'model', 'prompt_id', 'target_level', 'accuracy', 'within1', 'support', 'not_evaluated'])
-    for param_model_name in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
-        for param_prompt_id in ['01', '02', '11', '12', 'w01', 'w02']:
-            for param_dataset_name in [CERD, CAM_MCQ]:
+    for param_dataset_name in [CERD, CAM_MCQ, 'aggregate']:
+        for param_model_name in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
+            for param_prompt_id in ['01', '02', '11', '12', 'w01', 'w02']:
                 cefr_levels = CEFR_LEVELS[:-1] if param_prompt_id in ['01', '02', '11', '12'] else ['A1']
                 for target_level in cefr_levels:
-                    local_df = pd.read_csv(
-                        f'data/evaluation/{param_dataset_name}/{param_model_name}/cefr_classification_{param_prompt_id}_{target_level}.csv'
-                    )
+                    if param_dataset_name != 'aggregate':
+                        local_df = pd.read_csv(
+                            f'data/evaluation/{param_dataset_name}/{param_model_name}/cefr_classification_{param_prompt_id}_{target_level}.csv'
+                        )
+                    else:
+                        local_df = pd.concat([
+                            pd.read_csv(f'data/evaluation/{CERD}/{param_model_name}/cefr_classification_{param_prompt_id}_{target_level}.csv'),
+                            pd.read_csv(f'data/evaluation/{CAM_MCQ}/{param_model_name}/cefr_classification_{param_prompt_id}_{target_level}.csv'),
+                        ],
+                        ignore_index=True,)
                     # [{'label': 'B1', 'score': 0.9546597003936768}] or {'label': '00', 'score': 0.0}
                     len_0 = len(local_df)
                     local_df = local_df[local_df['predictions'] != "{'label': '00', 'score': 0.0}"]
