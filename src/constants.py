@@ -70,3 +70,11 @@ B2 = 'B2'
 C1 = 'C1'
 C2 = 'C2'
 CEFR_LEVELS = [A1, A2, B1, B2, C1, C2]
+CEFR_TO_INT = {
+    A1: 0,
+    A2: 1,
+    B1: 2,
+    B2: 3,
+    C1: 4,
+    C2: 5,
+}
