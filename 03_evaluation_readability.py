@@ -12,7 +12,12 @@ from src.constants import (
     GPT_4o_MINI_240718,
     CEFR_LEVELS, CEFR_TO_INT,
 )
-from constants import CERD, CAM_MCQ
+from constants import (
+    CERD,
+    CAM_MCQ,
+    MODEL_NAME_TO_STR,
+    PROMPT_ID_TO_STR,
+)
 from src.utils_plotting import boxplot_readability_indexes
 from utils import get_readability_indexes_per_target_level
 from src.evaluators.readability import ReadabilityEvaluator
@@ -53,19 +58,6 @@ def compute_and_save_readability_indexes():
                     for target_level in CEFR_LEVELS[:-1]:
                         readability_evaluation(dataset_name_param, model_name_param, prompt_id_param, target_level)
 
-MODEL_NAME_TO_STR = {
-    'gemma_2b': 'Gemma 2B',
-    'gemma_7b': 'Gemma 7B',
-    'llama3_8b': 'Llama 3 8B',
-    'gpt_4o_240806': 'GPT-4o',
-    'gpt_4o_mini_240718': 'GPT-4o-mini',
-}
-PROMPT_ID_TO_STR = {
-    '01': 'a.1',
-    '02': 'a.2',
-    '11': 'b.1',
-    '12': 'b.2',
-}
 
 if __name__ == '__main__':
     # this is to store all the computed readability indexes
