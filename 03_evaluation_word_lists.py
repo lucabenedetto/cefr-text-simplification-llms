@@ -105,7 +105,7 @@ if __name__ == '__main__':
                     out_df = pd.concat([out_df, new_df], ignore_index=True)
 
                 # This to save the results as plot
-                # line_plot_word_lists_count(word_lists_count_per_level, f"{MODEL_NAME_TO_STR[model_name_param]} | {PROMPT_ID_TO_STR[prompt_id_param]}", f"{dataset_name_param}_{model_name_param}_{prompt_id_param}", figsize=(3, 2.1))
+                line_plot_word_lists_count(word_lists_count_per_level, f"{MODEL_NAME_TO_STR[model_name_param]} | {PROMPT_ID_TO_STR[prompt_id_param]}", f"{dataset_name_param}_{model_name_param}_{prompt_id_param}", figsize=(3, 2.1))
 
 
     # This is to print the latex table that has as columns the target levels of the simplification, and as rows the
