@@ -1,6 +1,7 @@
 import pickle
 import numpy as np
 from collections import defaultdict
+from scipy.stats import wasserstein_distance
 
 import pandas as pd
 
@@ -122,6 +123,7 @@ if __name__ == '__main__':
     # dale_chall
     # nan (nan), 6.64 (0.60), 7.69 (0.69), 7.87 (0.62), 8.71 (0.83), 8.65 (0.72),
     errors_median_result_df = pd.DataFrame(columns=['dataset_name', 'model', 'prompt_id', 'target_level'] + list(READABILITY_INDEXES))
+    emd_results_dict = dict()
     for dataset_name_param in [CERD, CAM_MCQ, 'aggregate']:
         for model_name_param in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
             for prompt_id_param in ['01', '02', '11', '12']:
@@ -158,9 +160,43 @@ if __name__ == '__main__':
                         DALE_CHALL: [readability_indexes_per_level[idx][DALE_CHALL].median()],
                     })
                     errors_median_result_df = pd.concat([errors_median_result_df, new_row_df], ignore_index=True)
+
+                    emd_results_dict[(dataset_name_param, model_name_param, prompt_id_param, cefr, FLESCH_READING_EASE)] = list(readability_indexes_per_level[idx][FLESCH_READING_EASE].values)
+                    emd_results_dict[(dataset_name_param, model_name_param, prompt_id_param, cefr, FLESCH_KINCAID_GRADE_LEVEL)] = list(readability_indexes_per_level[idx][FLESCH_KINCAID_GRADE_LEVEL].values)
+                    emd_results_dict[(dataset_name_param, model_name_param, prompt_id_param, cefr, AUTOMATED_READABILITY_INDEX)] = list(readability_indexes_per_level[idx][AUTOMATED_READABILITY_INDEX].values)
+                    emd_results_dict[(dataset_name_param, model_name_param, prompt_id_param, cefr, GUNNING_FOG_INDEX)] = list(readability_indexes_per_level[idx][GUNNING_FOG_INDEX].values)
+                    emd_results_dict[(dataset_name_param, model_name_param, prompt_id_param, cefr, COLEMAN_LIAU)] = list(readability_indexes_per_level[idx][COLEMAN_LIAU].values)
+                    emd_results_dict[(dataset_name_param, model_name_param, prompt_id_param, cefr, SMOG_INDEX)] = list(readability_indexes_per_level[idx][SMOG_INDEX].values)
+                    emd_results_dict[(dataset_name_param, model_name_param, prompt_id_param, cefr, LINSEAR_WRITE_FORMULA)] = list(readability_indexes_per_level[idx][LINSEAR_WRITE_FORMULA].values)
+                    emd_results_dict[(dataset_name_param, model_name_param, prompt_id_param, cefr, DALE_CHALL)] = list(readability_indexes_per_level[idx][DALE_CHALL].values)
+
     for read_idx in READABILITY_INDEXES:
         errors_median_result_df[f'{read_idx}_ref_median'] = errors_median_result_df.apply(lambda r: median_readability_indexes[read_idx][CEFR_TO_INT[r['target_level']]], axis=1)
     errors_median_result_df = errors_median_result_df[~errors_median_result_df['target_level'].isin(['A1', 'C2'])]
     for read_idx in READABILITY_INDEXES:
         errors_median_result_df[f'{read_idx}_error'] = errors_median_result_df.apply(lambda r: np.abs(r[read_idx] - r[f'{read_idx}_ref_median']), axis=1)
     errors_median_result_df.to_csv(f'data/evaluation/errors_median_readability_indexes.csv')
+
+
+    emd_output_df = pd.DataFrame(columns=['dataset', 'model', 'prompt_id', 'cefr'] + [x + '_EMD' for x in READABILITY_INDEXES])
+    for dataset_name_param in [CERD, CAM_MCQ, 'aggregate']:
+        for model_name_param in [GEMMA_2B, GEMMA_7B, LLAMA_3_8B, GPT_4o_240806, GPT_4o_MINI_240718]:
+            for prompt_id_param in ['01', '02', '11', '12']:
+                for idx, cefr in enumerate(CEFR_LEVELS[:-1]):
+                    if cefr == 'A1':
+                        continue
+                    new_row_dict = {
+                        'dataset': [dataset_name_param],
+                        'model': [model_name_param],
+                        'prompt_id': [prompt_id_param],
+                        'cefr': [cefr],
+                    }
+                    for readability_index in READABILITY_INDEXES:
+                        new_row_dict[readability_index+'_EMD'] = [
+                            wasserstein_distance(
+                                emd_results_dict[(dataset_name_param, model_name_param, prompt_id_param, cefr, readability_index)],
+                                readability_indexes_per_level_aggregate[idx][readability_index]
+                            )
+                        ]
+                    emd_output_df = pd.concat([emd_output_df, pd.DataFrame(new_row_dict)], ignore_index=True)
+    emd_output_df.to_csv(f'data/evaluation/Earth_Movers_Distance_readability_indexes.csv')
