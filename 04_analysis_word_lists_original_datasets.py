@@ -82,6 +82,22 @@ def main():
     line_plot_word_lists_count(word_lists_count_per_level_cam_mcq, title='Cambridge MCQ', filename=CAM_MCQ)
     line_plot_word_lists_count(word_lists_count_per_level_aggregate, title='Aggregate', filename='aggregate')
 
+    # This is to print the frequency of words from different levels in the reference data.
+    out_df = pd.DataFrame(columns=['text_cefr', 'word_level', 'avg_frac'])
+    for level in CEFR_LEVELS:  # This is the CEFR level of the words from the wordlist.
+        for idx, local_df in enumerate(word_lists_count_per_level_aggregate):
+            # this is for the cefr level of the reading passage (?)
+            new_row = {
+                'text_cefr': [CEFR_LEVELS[idx]],
+                'word_level': [level],
+                'avg_frac': [local_df[level + '_frac'].mean()],
+            }
+            if len(out_df) == 0:
+                out_df = pd.DataFrame(new_row)
+            else:
+                out_df = pd.concat([out_df, pd.DataFrame(new_row)], ignore_index=True)
+    print(out_df)
+
 
 if __name__ == '__main__':
     main()
