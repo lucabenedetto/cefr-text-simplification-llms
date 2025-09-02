@@ -51,6 +51,8 @@ different folders for different datasets, models, and promtps.
 All the results/plots shown on the paper are obtained with the analysis scripts: `03_*` for the analysis on the 
 simplified texts, and `04_*` for the analysis on the original datasets.
 
+Evaluation files are saved into the `data/evaluation` folder, and the output figures in `output_figures`. 
+
 ## Misc.
 - The promtps are available in `src/prompts.py`
 - The model names (as used for the APIs) are in `src/constants.py`
