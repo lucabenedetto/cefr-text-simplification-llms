@@ -2,6 +2,10 @@
 This script prepares the word lists for different CEFR levels and stores them in the 'data/input/' directory.
 At this stage it only works on the olp_en_cefrj vocabulary profile (as taken from
 https://github.com/openlanguageprofiles/olp-en-cefrj).
+An alternative to the CEFR-J is to use word lists from Cambridge Assessment, such as:
+- from pre-A1 to A2: https://www.cambridgeenglish.org/images/149681-yle-flyers-word-list.pdf
+- A2: https://www.cambridgeenglish.org/Images/506886-a2-key-2020-vocabulary-list.pdf
+- B1: https://www.cambridgeenglish.org/Images/506887-b1-preliminary-2020-vocabulary-list.pdf
 """
 import pandas as pd
 
